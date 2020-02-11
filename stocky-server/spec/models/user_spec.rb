@@ -49,4 +49,33 @@ RSpec.describe User, :type => :model do
     end
   end
 
+  context "when login_hash is called on a user" do
+    before do
+      @hash = valid_user.login_hash
+    end
+
+    it "returns its id, name, and token" do
+      expect(@hash["id"]).to eq(valid_user.id)
+      expect(@hash["name"]).to eq(valid_user.name)
+      expect(@hash["token"]).to be_instance_of(String)
+    end
+
+    it "does not return email and password" do
+      expect(@hash["email"]).to be_nil
+      expect(@hash["password"]).to be_nil
+      expect(@hash["password_digest"]).to be_nil
+    end
+  end
+
+  context "when login_hash is called on a user with a token provided" do
+    before do
+      @token = "faketokey"
+      @hash = valid_user.login_hash(@token)
+    end
+
+    it "returns the given token" do
+      expect(@hash["token"]).to eq(@token)
+    end
+  end
+
 end
