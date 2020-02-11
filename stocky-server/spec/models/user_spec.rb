@@ -71,15 +71,4 @@ RSpec.describe User, :type => :model do
     end
   end
 
-  context "when login_hash is called on a user with a token provided" do
-    before do
-      @token = "faketokey"
-      @hash = valid_user.login_hash(@token)
-    end
-
-    it "returns the given token" do
-      expect(@hash["token"]).to eq(@token)
-    end
-  end
-
 end
