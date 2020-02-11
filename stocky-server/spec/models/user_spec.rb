@@ -35,6 +35,10 @@ RSpec.describe User, :type => :model do
     expect(build(:valid_user, password: "")).to_not be_valid
   end
 
+  it "is invalid with a mismatched password" do
+    expect(build(:valid_user, password_confirmation: "321")).to_not be_valid
+  end
+
   context "when another user has taken an email" do
     before do
       valid_user
