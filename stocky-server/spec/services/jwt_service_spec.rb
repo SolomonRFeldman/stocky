@@ -13,8 +13,8 @@ RSpec.describe JwtService, :type => :service do
       @token = JwtService.encode({ user_id: 1 })
     end
 
-    it "decodes the encoded string into its original form" do
-      expect(JwtService.decode(@token)).to eq({ user_id: 1 })
+    it "decodes the encoded string into its original form with a stringified key" do
+      expect(JwtService.decode(@token)).to eq({"user_id" => 1 })
     end
   end
 
