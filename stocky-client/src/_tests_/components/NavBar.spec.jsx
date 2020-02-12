@@ -4,5 +4,5 @@ import NavBar from '../../components/NavBar/NavBar'
 
 it('renders the web app name', () => {
   const navBar = render(<NavBar />)
-  expect(navBar.container).toHaveTextContent('Stocky')  
+  expect(navBar.container).toHaveTextContent('STOCKY')  
 })
