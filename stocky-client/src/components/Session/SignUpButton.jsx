@@ -1,8 +1,11 @@
 import React from 'react'
-import { Button } from 'react-bootstrap'
+import ModalButton from '../Modal/ModalButton'
+import SignUpForm from './SignUpForm'
 
 export default function SignUpButton(props) {
+  const modal = (props) => <SignUpForm {...props} />
+
   return(
-    <Button aria-label='Sign Up' variant='secondary'>Sign Up</Button>
+    <ModalButton variant='secondary' aria-label='Sign Up' modal={modal}>Sign Up</ModalButton>
   )
 }
