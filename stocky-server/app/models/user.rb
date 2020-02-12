@@ -10,4 +10,13 @@ class User < ApplicationRecord
     token = JwtService.encode({user_id: self.id})
     self.attributes.slice('id', 'name').merge("token" => token)
   end
+
+  class << self
+  
+    def authenticate(email: nil, password: nil)
+      user = self.find_by(email: email)
+      user if user && user.authenticate(password)
+    end
+
+  end
 end
