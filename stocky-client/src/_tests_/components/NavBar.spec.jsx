@@ -1,8 +1,8 @@
 import React from 'react'
 import { render } from '@testing-library/react'
-import NavBar from '../../components/NavBar/NavBar'
+import App from '../../App'
 
 it('renders the web app name', () => {
-  const navBar = render(<NavBar />)
-  expect(navBar.container).toHaveTextContent('STOCKY')  
+  const navBar = render(<App />).getByLabelText('Navbar')
+  expect(navBar).toHaveTextContent('STOCKY')  
 })
