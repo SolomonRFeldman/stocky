@@ -33,6 +33,10 @@ it('sends the correct data to the server when the signup form is filled and subm
   await act(async() => fireEvent.change(within(signUpForm).getByLabelText('Password Confirmation'), { target: { value: '123' } }))
   await act(async() => fireEvent.click(within(signUpForm).getByLabelText('Submit Sign Up')))
 
-  const expectedCall = { user: { name: "Test", email: "Test@123.com", password: "123", password_confirmation: "123" } }
-  expect(signInMock).toHaveBeenCalledWith(expectedCall)
+  const expectedCall = { name: "Test", email: "Test@123.com", password: "123", password_confirmation: "123" }
+  const params = JSON.parse(fetchMock.lastOptions().body).user
+  expect(params.name).toBe(expectedCall.name)
+  expect(params.email).toBe(expectedCall.email)
+  expect(params.password).toBe(expectedCall.password)
+  expect(params.password_confirmation).toBe(expectedCall.password_confirmation)
 })
