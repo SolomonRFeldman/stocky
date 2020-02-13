@@ -9,7 +9,10 @@ export default function SignUpForm(props) {
   const handleSubmit = event => {
     event.preventDefault()
 
-    return postRequest('/signup', { user: formData })
+    return postRequest('/signup', { user: formData }).then(user => {
+      localStorage.token = user.token
+      props.handleClose()
+    })
   }
 
   return(
