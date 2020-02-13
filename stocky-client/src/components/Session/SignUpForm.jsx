@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
 import { Modal, Form, Button } from 'react-bootstrap'
 import { postRequest } from '../../apiRequests'
+import { useDispatch } from 'react-redux'
 
 export default function SignUpForm(props) {
+  const dispatch = useDispatch()
+  const addCurrentUser = payload => dispatch({ type: 'ADD_CURRENT_USER', payload})
+
   const [formData, setFormData] = useState({ name: '', email: '', password: '', password_confirmation: ''})
   const handleChange = event => setFormData({ ...formData, [event.target.id]: event.target.value })
 
@@ -10,6 +14,7 @@ export default function SignUpForm(props) {
     event.preventDefault()
 
     return postRequest('/signup', { user: formData }).then(user => {
+      addCurrentUser({ id: user.id, name: user.name })
       localStorage.token = user.token
       props.handleClose()
     })
