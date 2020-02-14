@@ -120,7 +120,7 @@ it('logs the user in, displays their name in the banner with a Log In button, an
   expect(logInForm).not.toBeInTheDocument()
 })
 
-fit('automatically logs in returning users when they have a token in their localStorage', async() => {
+it('automatically logs in returning users when they have a token in their localStorage', async() => {
   localStorage.token = 'totesarealtoken'
   await act(async() => navBar = render(<MockReduxedApp />).getByLabelText('Navbar'))
 
