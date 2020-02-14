@@ -30,6 +30,7 @@ const MockReduxedApp = () => {
 
 afterEach(() => {
   store.dispatch({ type: 'REMOVE_CURRENT_USER' })
+  localStorage.clear()
 })
 
 it('renders the web app name', async() => {
