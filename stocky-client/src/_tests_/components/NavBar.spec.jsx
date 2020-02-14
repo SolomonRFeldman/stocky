@@ -92,8 +92,8 @@ it('sends the correct data to the server when the log in form is filled and subm
   await act(async() => fireEvent.click(logInButton))
   const logInForm = within(document).getByLabelText('Log In Form')
   
-  await act(async() => fireEvent.change(within(logInButton).getByLabelText('Email'), { target: { value: 'Test@123.com' } }))
-  await act(async() => fireEvent.change(within(logInButton).getByLabelText('Password'), { target: { value: '123' } }))
+  await act(async() => fireEvent.change(within(logInForm).getByLabelText('Email'), { target: { value: 'Test@123.com' } }))
+  await act(async() => fireEvent.change(within(logInForm).getByLabelText('Password'), { target: { value: '123' } }))
   await act(async() => fireEvent.click(within(logInForm).getByLabelText('Submit Log In')))
 
   const expectedCall = { email: "Test@123.com", password: "123" }
