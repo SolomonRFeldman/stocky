@@ -4,25 +4,45 @@ import App from '../../App'
 import { act } from 'react-dom/test-utils'
 import fetchMock from 'fetch-mock'
 
+import { createStore, applyMiddleware, compose } from 'redux'
+import manageCurrentUser from '../../reducers/manageCurrentUser'
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk'
+
+const store = createStore(
+  manageCurrentUser,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() &&
+  applyMiddleware(thunk)
+)
+
 let navBar
 
-const mockLoginResponse = { user: { id: 1, name: "Test", token: "totesarealtoken"}}
+
+const MockReduxedApp = () => {
+  return(<Provider store={store}><App /></Provider>)
+}
+
+const mockLoginResponse = { id: 1, name: "Test", token: "totesarealtoken" }
 fetchMock.post('/signup', mockLoginResponse)
 
+afterEach(() => {
+  store.dispatch({ type: 'REMOVE_CURRENT_USER' })
+})
+
 it('renders the web app name', async() => {
-  await act( async() => navBar = render(<App />).getByLabelText('Navbar'))
+  await act( async() => navBar = render(<MockReduxedApp />).getByLabelText('Navbar'))
   expect(navBar).toHaveTextContent('STOCKY')  
 })
 
 it('has a sign up button that opens a sign up modal/form', async() => {
-  await act(async() => navBar = render(<App />).getByLabelText('Navbar'))
+  await act(async() => navBar = render(<MockReduxedApp />).getByLabelText('Navbar'))
   const signUpButton = within(navBar).getByLabelText('Sign Up')
   await act(async() => fireEvent.click(signUpButton))
   expect(within(document).getByLabelText('Sign Up Modal')).toBeInTheDocument()
 })
 
 it('sends the correct data to the server when the signup form is filled and submitted', async() => {
-  await act(async() => navBar = render(<App />).getByLabelText('Navbar'))
+  await act(async() => navBar = render(<MockReduxedApp />).getByLabelText('Navbar'))
   const signUpButton = within(navBar).getByLabelText('Sign Up')
   await act(async() => fireEvent.click(signUpButton))
   const signUpForm = within(document).getByLabelText('Sign Up Modal')
@@ -42,7 +62,7 @@ it('sends the correct data to the server when the signup form is filled and subm
 })
 
 it('logs the user in, displays their name in the banner with a logout button, and closes the modal when they sign up', async() => {
-  await act(async() => navBar = render(<App />).getByLabelText('Navbar'))
+  await act(async() => navBar = render(<MockReduxedApp />).getByLabelText('Navbar'))
   const signUpButton = within(navBar).getByLabelText('Sign Up')
   await act(async() => fireEvent.click(signUpButton))
   const signUpForm = within(document).getByLabelText('Sign Up Modal')
