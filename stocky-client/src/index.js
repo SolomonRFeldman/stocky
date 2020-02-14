@@ -8,11 +8,11 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux';
 import manageCurrentUser from './reducers/manageCurrentUser';
 import thunk from 'redux-thunk'
+import { composeWithDevTools } from 'redux-devtools-extension'
 
 const store = createStore(
   manageCurrentUser,
-  compose(
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+  composeWithDevTools(
     applyMiddleware(thunk)
   )
 )
