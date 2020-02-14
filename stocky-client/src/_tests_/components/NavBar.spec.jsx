@@ -119,3 +119,14 @@ it('logs the user in, displays their name in the banner with a Log In button, an
   expect(within(navBar).getByLabelText('Log Out')).toBeInTheDocument()
   expect(logInForm).not.toBeInTheDocument()
 })
+
+fit('automatically logs in returning users when they have a token in their localStorage', async() => {
+  localStorage.token = 'totesarealtoken'
+  await act(async() => navBar = render(<MockReduxedApp />).getByLabelText('Navbar'))
+
+  const sentToken = fetchMock.lastOptions().headers.Token
+  expect(sentToken).toBe('totesarealtoken')
+
+  expect(navBar).toHaveTextContent('Test')
+  expect(within(navBar).getByLabelText('Log Out')).toBeInTheDocument()
+})
