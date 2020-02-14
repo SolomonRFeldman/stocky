@@ -105,7 +105,7 @@ it('sends the correct data to the server when the log in form is filled and subm
   expect(params.password).toBe(expectedCall.password)
 })
 
-it('logs the user in, displays their name in the banner with a Log In button, and closes the modal when they sign up', async() => {
+it('logs the user in, displays their name in the banner with a Log In button, and closes the modal when they log in', async() => {
   await act(async() => navBar = render(<MockReduxedApp />).getByLabelText('Navbar'))
   const logInButton = within(navBar).getByLabelText('Log In')
   await act(async() => fireEvent.click(logInButton))
