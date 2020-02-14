@@ -9,20 +9,22 @@ import manageCurrentUser from '../../reducers/manageCurrentUser'
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk'
 
+let navBar
+
+const mockLoginResponse = { id: 1, name: "Test", token: "totesarealtoken" }
+fetchMock.post('/signup', mockLoginResponse)
+
 const store = createStore(
   manageCurrentUser,
   applyMiddleware(thunk)
 )
-
-let navBar
-
-
 const MockReduxedApp = () => {
-  return(<Provider store={store}><App /></Provider>)
+  return(
+    <Provider store={store}>
+      <App />
+    </Provider>
+  )
 }
-
-const mockLoginResponse = { id: 1, name: "Test", token: "totesarealtoken" }
-fetchMock.post('/signup', mockLoginResponse)
 
 afterEach(() => {
   store.dispatch({ type: 'REMOVE_CURRENT_USER' })
