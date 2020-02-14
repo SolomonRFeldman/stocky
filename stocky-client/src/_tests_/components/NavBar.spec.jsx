@@ -4,7 +4,7 @@ import App from '../../App'
 import { act } from 'react-dom/test-utils'
 import fetchMock from 'fetch-mock'
 
-import { createStore, applyMiddleware, compose } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
 import manageCurrentUser from '../../reducers/manageCurrentUser'
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk'
@@ -129,4 +129,17 @@ it('automatically logs in returning users when they have a token in their localS
 
   expect(navBar).toHaveTextContent('Test')
   expect(within(navBar).getByLabelText('Log Out')).toBeInTheDocument()
+})
+
+it('logs out the user and clears the token from localStorage when the log out button is clicked', async() => {
+  localStorage.token = 'totesarealtoken'
+  await act(async() => navBar = render(<MockReduxedApp />).getByLabelText('Navbar'))
+  const logOutButton = within(navBar).getByLabelText('Log Out')
+  await act(async() => fireEvent.click(logOutButton))
+
+  expect(localStorage.token).toBeFalsy()
+  expect(navBar).not.toHaveTextContent('Test')
+  expect(logOutButton).not.toBeInTheDocument()
+  expect(within(navBar).getByLabelText('Sign Up')).toBeInTheDocument()
+  expect(within(navBar).getByLabelText('Log In')).toBeInTheDocument()
 })
