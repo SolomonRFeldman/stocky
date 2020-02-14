@@ -73,7 +73,7 @@ it('logs the user in, displays their name in the banner with a logout button, an
   await act(async() => fireEvent.change(within(signUpForm).getByLabelText('Password Confirmation'), { target: { value: '123' } }))
   await act(async() => fireEvent.click(within(signUpForm).getByLabelText('Submit Sign Up')))
 
-  expect(navBar).toHaveTextContent('Welcome, Test')
+  expect(navBar).toHaveTextContent('Test')
   expect(within(navBar).getByLabelText('Log Out')).toBeInTheDocument()
   expect(signUpForm).not.toBeInTheDocument()
 })
