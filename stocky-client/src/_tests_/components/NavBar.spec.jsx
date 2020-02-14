@@ -14,6 +14,8 @@ let navBar
 const mockLoginResponse = { id: 1, name: "Test", token: "totesarealtoken" }
 fetchMock.post('/signup', mockLoginResponse)
 
+fetchMock.post('/login', mockLoginResponse)
+
 const store = createStore(
   manageCurrentUser,
   applyMiddleware(thunk)
