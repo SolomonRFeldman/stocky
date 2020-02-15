@@ -42,8 +42,25 @@ RSpec.describe UserStock, :type => :model do
       @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id)
     end
 
-    it 'returns the stock' do
+    it 'returns the user_stock' do
       expect(UserStock.find_or_create_by_symbol(user_id: valid_user.id, stock_symbol: 'AAPL').id).to eq(@user_stock.id)
+    end
+  end
+
+
+  context "if the stock does not exist and UserStock.find_or_create_by_symbol is called" do
+    before do
+      @user_stock = UserStock.find_or_create_by_symbol(user_id: valid_user.id, stock_symbol: 'AAPL')
+    end
+
+    it 'creates the stock' do
+      expect(Stock.all.last).to_not be_nil
+      expect(Stock.all.last.symbol).to eq('AAPL')
+    end
+
+    it 'creates the user_stock' do
+      expect(@user_stock).to be_valid
+      expect(@user_stock).to be_instance_of(UserStock)
     end
   end
 
