@@ -6,6 +6,8 @@ class User < ApplicationRecord
   validates :email, presence: true
   validates :email, uniqueness: { case_sensative: false }
 
+  validates :balance, :numericality => { :greater_than_or_equal_to => 0 }
+
   def login_hash
     token = JwtService.encode({user_id: self.id})
     self.attributes.slice('id', 'name').merge("token" => token)
