@@ -77,85 +77,94 @@ RSpec.describe UserStock, :type => :model do
     end
   end
 
-  context "if the user_stock shares are added to" do
-    before do
-      @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id)
-      @user_stock.shares = 3
-      @user_stock.save
+  context "when a user_stock is updated" do
+    context "if the user_stock shares are increased" do
+      before do
+        @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 1)
+        valid_user.balance = 5000
+        valid_user.save
+        @user_stock.shares = 3
+        @user_stock.save
+      end
+
+      it 'changes the shares' do
+        expect(UserStock.find(@user_stock.id).shares).to eq(3)
+      end
+
+      it 'reduces the users balance based on price and quantity' do
+        expect(User.find(valid_user.id).balance).to eq(4800)
+      end
     end
 
-    it 'changes the shares' do
-      expect(UserStock.find(@user_stock.id).shares).to eq(3)
+    context "if the user_stock shares are reduced" do
+      before do
+        @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 3)
+        valid_user.balance = 5000
+        valid_user.save
+        @user_stock.shares = 1
+        @user_stock.save
+      end
+
+      it 'changes the shares' do
+        expect(UserStock.find(@user_stock.id).shares).to eq(1)
+      end
+
+      it 'adds to the users balance based on price and quantity' do
+        expect(User.find(valid_user.id).balance).to eq(5200)
+      end
     end
 
-    it 'reduces the users balance based on price and quantity' do
-      expect(User.find(valid_user.id).balance).to eq(4700)
-    end
-  end
+    context "if it fails to recieve a 200 request to the api" do
+      before do
+        stub_request(:get, /AAPL/)
+        .with(
+          headers: {
+            'Accept'=>'*/*',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'User-Agent'=>'Ruby'
+          }
+        )
+        .to_return(status: 400, body: '', headers: {})
+        @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 1)
+        valid_user.balance = 5000
+        valid_user.save
+        @user_stock.shares = 3
+        @user_stock.save
+      end
 
-  context "if the user_stock shares are reduced" do
-    before do
-      @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 3)
-      @user_stock.shares = 1
-      @user_stock.save
-    end
+      it "doesn't change the shares" do
+        expect(UserStock.find(@user_stock.id).shares).to eq(1)
+      end
 
-    it 'changes the shares' do
-      expect(UserStock.find(@user_stock.id).shares).to eq(1)
-    end
+      it "doesn't change the user's balance" do
+        expect(User.find(valid_user.id).balance).to eq(5000)
+      end
 
-    it 'adds to the users balance based on price and quantity' do
-      expect(User.find(valid_user.id).balance).to eq(5200)
-    end
-  end
-
-  context "if it fails recieve a 200 request" do
-    before do
-      stub_request(:get, /AAPL/)
-      .with(
-        headers: {
-          'Accept'=>'*/*',
-          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'User-Agent'=>'Ruby'
-        }
-      )
-      .to_return(status: 400, body: '', headers: {})
-      @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id)
-      @user_stock.shares = 3
-      @user_stock.save
+      it "adds an error to the user_stocks stock with the message 'api request failed'" do
+        expect(@user_stock.errors.messages[:stock]).to be_include('api request failed')
+      end
     end
 
-    it "doesn't change the shares" do
-      expect(UserStock.find(@user_stock.id).shares).to eq(0)
-    end
+    context "if the user_stock exists and shares are increased so that the user balance becomes negative" do
+      before do
+        @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 1)
+        valid_user.balance = 100
+        valid_user.save
+        @user_stock.shares = 3
+        @user_stock.save
+      end
 
-    it "doesn't change the user's balance" do
-      expect(User.find(valid_user.id).balance).to eq(5000)
-    end
+      it "doesn't change the shares" do
+        expect(UserStock.find(@user_stock.id).shares).to eq(1)
+      end
 
-    it "adds an error to the user_stocks stock with the message 'api request failed'" do
-      expect(@user_stock.errors.messages[:stock]).to be_include('api request failed')
-    end
-  end
+      it "keeps the users balance the same" do
+        expect(User.find(valid_user.id).balance).to eq(100)
+      end
 
-  context "if the user_stock shares are increased so that the user balance becomes negative" do
-    before do
-      @broke_user = create(:valid_user, balance: 100)
-      @user_stock = UserStock.create(user_id: @broke_user.id, stock_id: valid_stock.id)
-      @user_stock.shares = 3
-      @user_stock.save
-    end
-
-    it "doesn't change the shares" do
-      expect(UserStock.find(@user_stock.id).shares).to eq(0)
-    end
-
-    it "keeps the users balance the same" do
-      expect(User.find(@broke_user.id).balance).to eq(100)
-    end
-
-    it "adds an error to the user_stocks user with the validation failure message" do
-      expect(@user_stock.errors.messages[:user][:balance]).to be_include('must be greater than or equal to 0')
+      it "adds an error to the user_stocks user with the validation failure message" do
+        expect(@user_stock.errors.messages[:user][:balance]).to be_include('must be greater than or equal to 0')
+      end
     end
   end
 
