@@ -10,9 +10,9 @@ class UserStock < ApplicationRecord
       if response.code == 200 && price = JSON.parse(response.body)["quote"]["lastestPrice"]
         self.user.balance -= price.to_i * diff
         self.user.save
-      # idea for later test
-      # else 
-      #   raise ActiveRecord::Rollback 
+      else 
+        self.errors.add(:stock, 'api request failed')
+        raise ActiveRecord::Rollback
       end
     end
   end
