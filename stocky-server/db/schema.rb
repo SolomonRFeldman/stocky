@@ -10,11 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_11_051933) do
+ActiveRecord::Schema.define(version: 2020_02_15_164240) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "plpgsql"
+
+  create_table "stocks", force: :cascade do |t|
+    t.citext "symbol", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.citext "name", null: false
