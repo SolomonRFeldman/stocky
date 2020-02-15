@@ -10,6 +10,7 @@ class UserStock < ApplicationRecord
       api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
       response = HTTParty.get("https://cloud.iexapis.com/stable/stock/#{stock.symbol}/batch?types=quote&token=#{api_key}")
       if response.code == 200 && price = JSON.parse(response.body)["quote"]["lastestPrice"]
+        self.user = User.find(self.user.id)
         self.user.balance -= price.to_i * diff
         unless self.user.save
           self.errors.messages[:user] = self.user.errors.messages
