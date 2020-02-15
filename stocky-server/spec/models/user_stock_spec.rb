@@ -4,6 +4,18 @@ RSpec.describe UserStock, :type => :model do
   let(:valid_user) { create(:valid_user) }
   let(:valid_stock) { create(:valid_stock) }
 
+  before(:each) do
+    stub_request(:get, /AAPL/)
+      .with(
+        headers: {
+          'Accept'=>'*/*',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent'=>'Ruby'
+        }
+      )
+      .to_return(status: 200, body: '{"quote":{"symbol":"APPL","lastestPrice":"100"}}', headers: {})
+  end
+
   context 'when it is created with a user and a stock' do
     before do
       @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id)
@@ -61,6 +73,38 @@ RSpec.describe UserStock, :type => :model do
     it 'creates the user_stock' do
       expect(@user_stock).to be_valid
       expect(@user_stock).to be_instance_of(UserStock)
+    end
+  end
+
+  context "if the user_stock shares are added to" do
+    before do
+      @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id)
+      @user_stock.shares = 3
+      @user_stock.save
+    end
+
+    it 'changes the shares' do
+      expect(UserStock.find(@user_stock.id).shares).to eq(3)
+    end
+
+    it 'reduces the users balance based on price and quantity' do
+      expect(User.find(valid_user.id).balance).to eq(4700)
+    end
+  end
+
+  context "if the user_stock shares are reduced" do
+    before do
+      @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 3)
+      @user_stock.shares = 1
+      @user_stock.save
+    end
+
+    it 'changes the shares' do
+      expect(UserStock.find(@user_stock.id).shares).to eq(1)
+    end
+
+    it 'adds to the users balance based on price and quantity' do
+      expect(User.find(valid_user.id).balance).to eq(5200)
     end
   end
 
