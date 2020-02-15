@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe User, :type => :model do
   let(:valid_user) { create(:valid_user) }
+  let(:valid_stock) { create(:valid_stock) }
   
   it "is valid with a name, email, and password" do
     expect(valid_user).to be_valid
@@ -118,5 +119,25 @@ RSpec.describe User, :type => :model do
       expect(@user).to_not be_valid
     end
   end
+
+  context 'when a user is joined to stocks' do
+    before do
+      @user_stock_1 = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id)
+      @stock_2 = build(:valid_stock, symbol: 'FB')
+      @stock_2.save
+      @user_stock_2 = UserStock.create(user_id: valid_user.id, stock_id: @stock_2.id)
+    end
+
+    it 'has many user_stocks' do
+      expect(valid_user.user_stocks).to be_include(@user_stock_1)
+      expect(valid_user.user_stocks).to be_include(@user_stock_2)
+    end
+
+    it 'has many stocks' do
+      expect(valid_user.stocks).to be_include(valid_stock)
+      expect(valid_user.stocks).to be_include(@stock_2)
+    end
+  end
+      
 
 end
