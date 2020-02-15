@@ -38,7 +38,7 @@ RSpec.describe UserStock, :type => :model do
     end
   end
 
-  context "when a user doesn't have a stock and UserStock.find_or_create_by_symbol is called" do
+  context "when a user doesn't have a stock and UserStock.find_or_new_by_symbol is called" do
     before do
       valid_stock
     end
@@ -49,7 +49,7 @@ RSpec.describe UserStock, :type => :model do
     end
   end
 
-  context "when a user has a stock and UserStock.find_or_create_by_symbol is called" do
+  context "when a user has a stock and UserStock.find_or_new_by_symbol is called" do
     before do
       @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id)
     end
@@ -60,7 +60,7 @@ RSpec.describe UserStock, :type => :model do
   end
 
 
-  context "if the stock does not exist and UserStock.find_or_create_by_symbol is called and saved" do
+  context "if the stock does not exist and UserStock.find_or_new_by_symbol is called and saved" do
     before do
       @user_stock = UserStock.find_or_new_by_symbol(user_id: valid_user.id, stock_symbol: 'AAPL')
       @user_stock.save
@@ -167,5 +167,7 @@ RSpec.describe UserStock, :type => :model do
       end
     end
   end
+
+
 
 end
