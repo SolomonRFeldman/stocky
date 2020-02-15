@@ -1,6 +1,7 @@
 class UserStock < ApplicationRecord
   belongs_to :user
   belongs_to :stock
+  accepts_nested_attributes_for :user
 
   before_update do
     diff = self.shares - UserStock.find(self.id).shares
@@ -9,7 +10,10 @@ class UserStock < ApplicationRecord
       response = HTTParty.get("https://cloud.iexapis.com/stable/stock/#{stock.symbol}/batch?types=quote&token=#{api_key}")
       if response.code == 200 && price = JSON.parse(response.body)["quote"]["lastestPrice"]
         self.user.balance -= price.to_i * diff
-        self.user.save
+        unless self.user.save
+          self.errors.messages[:user] = self.user.errors.messages
+          raise ActiveRecord::Rollback
+        end
       else 
         self.errors.add(:stock, 'api request failed')
         raise ActiveRecord::Rollback
