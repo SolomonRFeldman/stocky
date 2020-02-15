@@ -104,4 +104,8 @@ RSpec.describe User, :type => :model do
     end
   end
 
+  it 'defaults balance to 5000' do
+    expect(valid_user.balance).to eq(5000)
+  end
+
 end
