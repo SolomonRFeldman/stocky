@@ -108,4 +108,15 @@ RSpec.describe User, :type => :model do
     expect(valid_user.balance).to eq(5000)
   end
 
+  context 'when a user has a negative balance' do
+    before do
+      @user = valid_user
+      @user.balance = -1
+    end
+
+    it 'is not valid' do
+      expect(@user).to_not be_valid
+    end
+  end
+
 end
