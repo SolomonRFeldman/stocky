@@ -137,4 +137,25 @@ RSpec.describe UserStock, :type => :model do
     end
   end
 
+  context "if the user_stock shares are increased so that the user balance becomes negative" do
+    before do
+      @broke_user = create(:valid_user, balance: 100)
+      @user_stock = UserStock.create(user_id: @broke_user.id, stock_id: valid_stock.id)
+      @user_stock.shares = 3
+      @user_stock.save
+    end
+
+    it "doesn't change the shares" do
+      expect(UserStock.find(@user_stock.id).shares).to eq(0)
+    end
+
+    it "keeps the users balance the same" do
+      expect(User.find(@broke_user.id).balance).to eq(100)
+    end
+
+    it "adds an error to the user_stocks user with the validation failure message" do
+      expect(@user_stock.errors.messages[:user][:balance]).to be_include('must be greater than or equal to 0')
+    end
+  end
+
 end
