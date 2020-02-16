@@ -1,26 +1,26 @@
 class UserStock < ApplicationRecord
   belongs_to :user
   belongs_to :stock
-  accepts_nested_attributes_for :user
 
-  # only want to trigger on update, handles selling/buying shares
-  before_update do
-    diff = self.shares - UserStock.find(self.id).shares
+  before_validation do
+    self.id ? diff = self.shares - UserStock.find(self.id).shares : diff = self.shares
     if diff != 0
       api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
       response = HTTParty.get("https://cloud.iexapis.com/stable/stock/#{stock.symbol}/batch?types=quote&token=#{api_key}")
       if response.code == 200 && price = JSON.parse(response.body)["quote"]["lastestPrice"]
         self.user = User.find(self.user.id)
         self.user.balance -= price.to_i * diff
-        unless self.user.save
+        unless self.user.valid?
           self.errors.messages[:user] = self.user.errors.messages
-          raise ActiveRecord::Rollback
         end
       else 
         self.errors.add(:stock, 'api request failed')
-        raise ActiveRecord::Rollback
       end
     end
+  end
+
+  before_save do
+    self.user.save
   end
 
   class << self
