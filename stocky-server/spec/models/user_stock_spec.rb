@@ -13,7 +13,7 @@ RSpec.describe UserStock, :type => :model do
           'User-Agent'=>'Ruby'
         }
       )
-      .to_return(status: 200, body: '{"quote":{"symbol":"APPL","latestPrice":100,"open":100}}', headers: {})
+      .to_return(status: 200, body: '{"quote":{"symbol":"APPL","latestPrice":100,"open":98}}', headers: {})
     stub_request(:get, /FB/)
       .with(
         headers: {
@@ -304,6 +304,21 @@ RSpec.describe UserStock, :type => :model do
       expect(user_stock["symbol"]).to eq("FB")
       expect(user_stock["latestPrice"]).to eq(125)
       expect(user_stock["open"]).to eq(122)
+    end
+  end
+
+  context "when user_stock.with_prices is called with on an instance of user_stock" do
+    before do
+      @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 3)
+      @user_stock_prices = @user_stock.with_prices
+    end
+
+    it "returns the user_stock with an id, shares, symbol, latestPrice, and open" do
+      expect(@user_stock_prices["id"]).to eq(@user_stock.id)
+      expect(@user_stock_prices["shares"]).to eq(3)
+      expect(@user_stock_prices["symbol"]).to eq("AAPL")
+      expect(@user_stock_prices["latestPrice"]).to eq(100)
+      expect(@user_stock_prices["open"]).to eq(98)
     end
   end
 
