@@ -7,9 +7,10 @@ class UsersController < ApplicationController
 
   def show
     if @current_user_id == params[:id].to_i
+      user = User.find_by(id: @current_user_id)
       user_stocks = UserStock.with_prices(UserStock.where(user_id: params[:id]))
       user_stock_histories = UserStockHistory.with_symbol(UserStockHistory.where(user_id: params[:id]))
-      return render json: { user_stocks: user_stocks, user_stock_histories: user_stock_histories }, status: 200
+      return render json: { balance: user.balance, user_stocks: user_stocks, user_stock_histories: user_stock_histories }, status: 200
     end
     render status: 400
   end
