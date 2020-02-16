@@ -16,41 +16,41 @@ describe 'Users Features', :type => :feature do
           'User-Agent'=>'Ruby'
         }
       )
-      .to_return(status: 200, body: '{"quote":{"symbol":"APPL","lastestPrice":100}}', headers: {})
+      .to_return(status: 200, body: '{"quote":{"symbol":"APPL","latestPrice":100,"open":98}}', headers: {})
     stub_request(:get, /FB/)
-    .with(
-      headers: {
-        'Accept'=>'*/*',
-        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-        'User-Agent'=>'Ruby'
+      .with(
+        headers: {
+          'Accept'=>'*/*',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent'=>'Ruby'
+        }
+      )
+      .to_return(status: 200, body: '{"quote":{"symbol":"FB","latestPrice":125,"open":122}}', headers: {})
+    combined_response = {
+      "AAPL" => {
+        "quote" => {
+          "symbol" => "AAPL",
+          "latestPrice" => 100,
+          "open" => 98
+        }
+      },
+      "FB" => {
+        "quote" => {
+          "symbol" => "FB",
+          "latestPrice" => 125,
+          "open" => 122
+        }
       }
-    )
-    .to_return(status: 200, body: '{"quote":{"symbol":"FB","lastestPrice":125}}', headers: {})
-  combined_response = {
-    "AAPL" => {
-      "quote" => {
-        "symbol" => "AAPL",
-        "latestPrice" => 100,
-        "open" => 98
-      }
-    },
-    "FB" => {
-      "quote" => {
-        "symbol" => "FB",
-        "latestPrice" => 125,
-        "open" => 122
-      }
-    }
-  }.to_json
-  stub_request(:get, /FB,AAPL|AAPL,FB/)
-    .with(
-      headers: {
-        'Accept'=>'*/*',
-        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-        'User-Agent'=>'Ruby'
-      }
-    )
-    .to_return(status: 200, body: combined_response, headers: {})
+    }.to_json
+    stub_request(:get, /FB,AAPL|AAPL,FB/)
+      .with(
+        headers: {
+          'Accept'=>'*/*',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent'=>'Ruby'
+        }
+      )
+      .to_return(status: 200, body: combined_response, headers: {})
   end
   
   context 'when a user has many transactions and their show page is called without a token' do
