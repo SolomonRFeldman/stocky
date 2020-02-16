@@ -5,6 +5,13 @@ class UsersController < ApplicationController
     user.save ? render(json: user.login_hash, status: 200) : render(json: { errors: user.errors }, status: 400 )
   end
 
+  def show
+    if @current_user_id == params[:id]
+      return render status: 200
+    end
+    render status: 400
+  end
+
   private
  
   def user_params
