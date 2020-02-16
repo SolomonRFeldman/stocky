@@ -88,6 +88,10 @@ describe 'Users Features', :type => :feature do
       expect(page.status_code).to eq(200)
     end
 
+    it 'returns their id' do
+      expect(JSON.parse(page.body)["id"]).to eq(valid_user.id)
+    end
+
     it 'returns their balance' do
       expect(JSON.parse(page.body)["balance"]).to eq("5000.0")
     end
