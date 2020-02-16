@@ -14,6 +14,40 @@ RSpec.describe UserStock, :type => :model do
         }
       )
       .to_return(status: 200, body: '{"quote":{"symbol":"APPL","lastestPrice":"100"}}', headers: {})
+    stub_request(:get, /FB/)
+      .with(
+        headers: {
+          'Accept'=>'*/*',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent'=>'Ruby'
+        }
+      )
+      .to_return(status: 200, body: '{"quote":{"symbol":"FB","lastestPrice":"125"}}', headers: {})
+    combined_response = {
+      "AAPL" => {
+        "quote" => {
+          "symbol" => "AAPL",
+          "latestPrice" => 100,
+          "open" => 98
+        }
+      },
+      "FB" => {
+        "quote" => {
+          "symbol" => "FB",
+          "latestPrice" => 125,
+          "open" => 122
+        }
+      }
+    }.to_json
+    stub_request(:get, /FB,AAPL|AAPL,FB/)
+      .with(
+        headers: {
+          'Accept'=>'*/*',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent'=>'Ruby'
+        }
+      )
+      .to_return(status: 200, body: combined_response, headers: {})
   end
 
   context 'when it is created with a user and a stock' do
@@ -253,6 +287,25 @@ RSpec.describe UserStock, :type => :model do
       it "adds an error to the user_stocks user with the validation failure message" do
         expect(@user_stock.errors.messages[:user][:balance]).to be_include('must be greater than or equal to 0')
       end
+    end
+  end
+
+  context "when UserStock.with_prices is called with a collection of user_stocks" do
+    before do
+      @user_stock_1 = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 3)
+      @user_stock_2 = UserStock.create(user_id: valid_user.id, stock_id: create(:valid_stock, symbol: "FB").id, shares: 2)
+      @user_stocks = UserStock.with_prices(UserStock.all)
+    end
+
+    it "returns the user_stock with an id, shares, symbol, latestPrice, and open" do
+      puts @user_stocks
+      user_stock = @user_stocks.detect{ |user_stock| user_stock["id"] == @user_stock_2.id }
+      puts user_stock["id"]
+      expect(user_stock["id"]).to eq(@user_stock_2.id)
+      expect(user_stock["shares"]).to eq(2)
+      expect(user_stock["symbol"]).to eq("FB")
+      expect(user_stock["latestPrice"]).to eq(125)
+      expect(user_stock["open"]).to eq(122)
     end
   end
 
