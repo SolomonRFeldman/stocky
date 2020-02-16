@@ -3,6 +3,7 @@ class UserStock < ApplicationRecord
   belongs_to :stock
 
   before_validation do
+    price = 0
     self.id ? diff = self.shares - UserStock.find(self.id).shares : diff = self.shares
     if diff != 0
       api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
@@ -10,6 +11,10 @@ class UserStock < ApplicationRecord
       if response.code == 200 && price = JSON.parse(response.body)["quote"]["lastestPrice"]
         self.user = User.find(self.user.id)
         self.user.balance -= price.to_i * diff
+        user_stock_history = UserStockHistory.new(
+          user_id: self.user.id, stock_id: self.stock.id, price: price.to_i * diff, shares: diff
+        )
+        self.user.user_stock_histories << user_stock_history
         self.errors.messages[:user] = self.user.errors.messages unless self.user.valid?
       else 
         self.errors.add(:stock, 'api request failed')
