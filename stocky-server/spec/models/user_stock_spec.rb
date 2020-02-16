@@ -241,6 +241,12 @@ RSpec.describe UserStock, :type => :model do
         expect(UserStockHistory.all.last.shares).to eq(2)
         expect(UserStockHistory.all.last.price).to eq(200)
       end
+
+      it 'stores the created history in .last_history' do
+        expect(@user_stock.last_history).to be_instance_of(UserStockHistory)
+        expect(@user_stock.last_history.shares).to eq(2)
+        expect(@user_stock.last_history.price).to eq(200)
+      end
     end
 
     context "when it fails to recieve a 200 request to the api" do
