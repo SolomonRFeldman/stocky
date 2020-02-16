@@ -81,8 +81,9 @@ RSpec.describe UserStock, :type => :model do
     context "if the user_stock shares are increased" do
       before do
         @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 1)
-        valid_user.balance = 5000
-        valid_user.save
+        user = @user_stock.user
+        user.balance = 5000
+        user.save
         @user_stock.shares = 3
         @user_stock.save
       end
@@ -99,8 +100,9 @@ RSpec.describe UserStock, :type => :model do
     context "if the user_stock shares are reduced" do
       before do
         @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 3)
-        valid_user.balance = 5000
-        valid_user.save
+        user = @user_stock.user
+        user.balance = 5000
+        user.save
         @user_stock.shares = 1
         @user_stock.save
       end
@@ -116,6 +118,7 @@ RSpec.describe UserStock, :type => :model do
 
     context "if it fails to recieve a 200 request to the api" do
       before do
+        @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 1)
         stub_request(:get, /AAPL/)
         .with(
           headers: {
@@ -125,9 +128,9 @@ RSpec.describe UserStock, :type => :model do
           }
         )
         .to_return(status: 400, body: '', headers: {})
-        @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 1)
-        valid_user.balance = 5000
-        valid_user.save
+        user = @user_stock.user
+        user.balance = 5000
+        user.save
         @user_stock.shares = 3
         @user_stock.save
       end
@@ -148,8 +151,9 @@ RSpec.describe UserStock, :type => :model do
     context "if the user_stock exists and shares are increased so that the user balance becomes negative" do
       before do
         @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 1)
-        valid_user.balance = 100
-        valid_user.save
+        user = @user_stock.user
+        user.balance = 100
+        user.save
         @user_stock.shares = 3
         @user_stock.save
       end
@@ -167,7 +171,5 @@ RSpec.describe UserStock, :type => :model do
       end
     end
   end
-
-
 
 end
