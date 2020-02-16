@@ -23,7 +23,7 @@ export default function LogInForm(props) {
 
   return(
     <Modal aria-label='Log In Form' show={props.show} onHide={props.handleClose} centered>
-      <Modal.Header>
+      <Modal.Header closeButton>
         <Modal.Title>Log In</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
