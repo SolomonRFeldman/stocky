@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   end
 
   def show
-    if @current_user_id == params[:id]
+    if @current_user_id == params[:id].to_i
       return render status: 200
     end
     render status: 400
