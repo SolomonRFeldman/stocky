@@ -37,6 +37,24 @@ class UserStock < ApplicationRecord
       user_stock ? user_stock : UserStock.new(user_id: user_id, stock: Stock.find_or_create_by(symbol: stock_symbol))
     end
 
+    def with_prices(user_stocks)
+      user_stocks = user_stocks
+        .joins('JOIN stocks ON user_stocks.stock_id = stocks.id')
+        .select(:id, :shares, :symbol)
+      symbols = user_stocks.map{ |user_stock| user_stock.symbol }.join(',')
+      api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
+      uri = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=#{symbols}L&types=quote&token=#{api_key}"
+      response = HTTParty.get(uri)
+      if response.code == 200 && stocks = JSON.parse(response.body)
+        user_stocks.map{ |user_stock|
+          quote = stocks[user_stock.symbol]["quote"]
+          user_stock.attributes.merge({ "latestPrice" => quote["latestPrice"], "open" => quote["open"] }) 
+        }
+      else
+        nil
+      end
+    end
+
   end
 
 end
