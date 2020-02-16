@@ -1,4 +1,6 @@
 class UserStock < ApplicationRecord
+  attr_accessor :last_history
+
   belongs_to :user
   belongs_to :stock
 
@@ -15,6 +17,7 @@ class UserStock < ApplicationRecord
           user_id: self.user.id, stock_id: self.stock.id, price: price.to_i * diff, shares: diff
         )
         self.user.user_stock_histories << user_stock_history
+        self.last_history = user_stock_history
         self.errors.messages[:user] = self.user.errors.messages unless self.user.valid?
       else 
         self.errors.add(:stock, 'api request failed')
