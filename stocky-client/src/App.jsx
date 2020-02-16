@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import 'bootswatch/dist/journal/bootstrap.min.css';
 import NavBar from './components/NavBar/NavBar';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { postRequest } from './apiRequests';
+import UserStocks from './components/UserStocks/UserStocks';
 
 export default function App() {
   const dispatch = useDispatch()
@@ -16,11 +17,15 @@ export default function App() {
     }
   }, [])
 
+  const currentUser = useSelector(state => state.currentUser)
+  const userStocks = () => currentUser.id ? <UserStocks /> : null
+
   return (
     <div className="App">
       <header>
         <NavBar />
       </header>
+      {userStocks()}
     </div>
   );
 }
