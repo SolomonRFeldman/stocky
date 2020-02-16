@@ -25,10 +25,11 @@ describe 'Users Features', :type => :feature do
       expect(User.find_by(name: "Test")).to_not be_nil
     end
 
-    it "returns the users id, name, and an encrypted token, jsonified" do
+    it "returns the users id, name, balance, and an encrypted token, jsonified" do
       expect(page).to have_content({id: User.find_by(name: "Test").id}.to_json.tr('{}', ''))
       expect(page).to have_content({name: "Test"}.to_json.tr('{}', ''))
       expect(page).to have_content(/"token":"([^"]*)"/)
+      expect(page).to have_content({balance: "5000.0"}.to_json.tr('{}', ''))
       expect(page).to_not have_content({email: "Test@123.com"}.to_json.tr('{}', ''))
       expect(page).to_not have_content({password: "123"}.to_json.tr('{}', ''))
     end
