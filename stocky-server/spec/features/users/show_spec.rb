@@ -77,12 +77,19 @@ describe 'Users Features', :type => :feature do
       @user_stock_2 = UserStock.find_or_new_by_symbol(user_id: valid_user.id, stock_symbol: "FB")
       @user_stock_2.shares = 3
       @user_stock_2.save
+      user = User.find_by(id: valid_user.id)
+      user.balance = 5000
+      user.save
       page.driver.header 'Token', create_token(valid_user)
       page.driver.submit :get, user_path(valid_user.id), {}
     end
     
     it 'returns 200' do
       expect(page.status_code).to eq(200)
+    end
+
+    it 'returns their balance' do
+      expect(JSON.parse(page.body)["balance"]).to eq("5000.0")
     end
 
     it 'returns json with user_stocks key with an array of user_stocks with current price and day opening' do
