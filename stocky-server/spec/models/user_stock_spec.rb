@@ -298,9 +298,7 @@ RSpec.describe UserStock, :type => :model do
     end
 
     it "returns the user_stock with an id, shares, symbol, latestPrice, and open" do
-      puts @user_stocks
       user_stock = @user_stocks.detect{ |user_stock| user_stock["id"] == @user_stock_2.id }
-      puts user_stock["id"]
       expect(user_stock["id"]).to eq(@user_stock_2.id)
       expect(user_stock["shares"]).to eq(2)
       expect(user_stock["symbol"]).to eq("FB")
