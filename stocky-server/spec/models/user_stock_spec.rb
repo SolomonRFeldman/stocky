@@ -313,6 +313,16 @@ RSpec.describe UserStock, :type => :model do
     end
   end
 
+  context "when UserStock.with_prices is called with an empty collection" do
+    before do
+      @user_stocks = UserStock.with_prices(UserStock.where(user_id: 0))
+    end
+
+    it "returns an empty array" do
+      expect(@user_stocks).to eq([])
+    end
+  end
+
   context "when user_stock.with_prices is called with on an instance of user_stock" do
     before do
       @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 3)
