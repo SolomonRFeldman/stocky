@@ -44,4 +44,21 @@ describe 'Users Features', :type => :feature do
     end
   end
 
+  context 'when a user has many transactions and their show page is called with a valid token' do
+    before do
+      user_stock = UserStock.find_or_new_by_symbol(user_id: valid_user.id, stock_symbol: "AAPL")
+      user_stock.shares = 2
+      user_stock.save
+      user_stock = UserStock.find_or_new_by_symbol(user_id: valid_user.id, stock_symbol: "FB")
+      user_stock.shares = 3
+      user_stock.save
+      page.driver.header 'Token', create_token(valid_user)
+      page.driver.submit :get, user_path(valid_user.id), {}
+    end
+    
+    it 'returns 200' do
+      expect(page.status_code).to eq(200)
+    end
+  end
+
 end
