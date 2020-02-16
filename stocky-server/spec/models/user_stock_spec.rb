@@ -172,4 +172,66 @@ RSpec.describe UserStock, :type => :model do
     end
   end
 
+  context "when a user_stock is created with shares" do
+    context "when it is created successfully" do
+      before do
+        @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 2)
+      end
+
+      it 'creates the user_stock' do
+        expect(UserStock.find_by(id: @user_stock.id)).to_not be_nil
+      end
+
+      it 'reduces the users balance based on price and quantity' do
+        expect(User.find(valid_user.id).balance).to eq(4800)
+      end
+    end
+
+    context "when it fails to recieve a 200 request to the api" do
+      before do
+        stub_request(:get, /AAPL/)
+        .with(
+          headers: {
+            'Accept'=>'*/*',
+            'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+            'User-Agent'=>'Ruby'
+          }
+        )
+        .to_return(status: 400, body: '', headers: {})
+        @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: 2)
+      end
+
+      it "is not valid" do
+        expect(@user_stock).to_not be_valid
+      end
+
+      it "doesn't change the user's balance" do
+        expect(User.find(valid_user.id).balance).to eq(5000)
+      end
+
+      it "adds an error to the user_stocks stock with the message 'api request failed'" do
+        expect(@user_stock.errors.messages[:stock]).to be_include('api request failed')
+      end
+    end
+
+    context "if the user_stock exists and shares are increased so that the user balance becomes negative" do
+      before do
+        @user = create(:valid_user, balance: 100)
+        @user_stock = UserStock.create(user_id: @user.id, stock_id: valid_stock.id, shares: 2)
+      end
+
+      it 'is not valid' do
+        expect(@user_stock).to_not be_valid
+      end
+
+      it "keeps the users balance the same" do
+        expect(User.find(@user.id).balance).to eq(100)
+      end
+
+      it "adds an error to the user_stocks user with the validation failure message" do
+        expect(@user_stock.errors.messages[:user][:balance]).to be_include('must be greater than or equal to 0')
+      end
+    end
+  end
+
 end
