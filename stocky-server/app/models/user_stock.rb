@@ -10,9 +10,7 @@ class UserStock < ApplicationRecord
       if response.code == 200 && price = JSON.parse(response.body)["quote"]["lastestPrice"]
         self.user = User.find(self.user.id)
         self.user.balance -= price.to_i * diff
-        unless self.user.valid?
-          self.errors.messages[:user] = self.user.errors.messages
-        end
+        self.errors.messages[:user] = self.user.errors.messages unless self.user.valid?
       else 
         self.errors.add(:stock, 'api request failed')
       end
