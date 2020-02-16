@@ -13,7 +13,7 @@ RSpec.describe UserStock, :type => :model do
           'User-Agent'=>'Ruby'
         }
       )
-      .to_return(status: 200, body: '{"quote":{"symbol":"APPL","lastestPrice":"100"}}', headers: {})
+      .to_return(status: 200, body: '{"quote":{"symbol":"APPL","latestPrice":100,"open":100}}', headers: {})
     stub_request(:get, /FB/)
       .with(
         headers: {
@@ -22,7 +22,7 @@ RSpec.describe UserStock, :type => :model do
           'User-Agent'=>'Ruby'
         }
       )
-      .to_return(status: 200, body: '{"quote":{"symbol":"FB","lastestPrice":"125"}}', headers: {})
+      .to_return(status: 200, body: '{"quote":{"symbol":"FB","latestPrice":125,"open":122}}', headers: {})
     combined_response = {
       "AAPL" => {
         "quote" => {
