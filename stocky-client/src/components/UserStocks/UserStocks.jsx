@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux'
 
 export default function UserStocks(props) {
   const currentUser = useSelector(state => state.currentUser)
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState({balance: 0})
   
   useEffect(() =>{
     getRequest(`/users/${currentUser.id}`).then(fetchedUser => setUser(fetchedUser))
