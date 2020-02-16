@@ -56,13 +56,22 @@ describe 'Users Features', :type => :feature do
     end
 
     it 'returns json with user_stock that was created with current price and day opening' do
-      expect(JSON.parse(page.body)).to eq({ 
-        "id" => UserStock.all.last.id,
-        "shares" => 2,
+      resp = JSON.parse(page.body)
+      expect(resp["id"]).to eq(UserStock.all.last.id)
+      expect(resp["shares"]).to eq(2)
+      expect(resp["symbol"]).to eq("AAPL")
+      expect(resp["latestPrice"]).to eq(100)
+      expect(resp["open"]).to eq(98)
+    end
+
+    it 'returns json with the user_stock_history in the user_stock_history key' do
+      expect(JSON.parse(page.body)["user_stock_history"]).to eq({ 
+        "id" => UserStockHistory.find_by(user_id: valid_user.id, stock_id: UserStock.all.last.stock_id).id,
         "symbol" => "AAPL",
-        "latestPrice" => 100,
-        "open" => 98
+        "shares" => 2,
+        "price" => "200.0"
       })
     end
   end
+
 end
