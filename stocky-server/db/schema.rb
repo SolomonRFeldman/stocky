@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_15_173743) do
+ActiveRecord::Schema.define(version: 2020_02_16_021930) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -18,6 +18,13 @@ ActiveRecord::Schema.define(version: 2020_02_15_173743) do
 
   create_table "stocks", force: :cascade do |t|
     t.citext "symbol", null: false
+  end
+
+  create_table "user_stock_histories", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "stock_id"
+    t.integer "shares"
+    t.decimal "price"
   end
 
   create_table "user_stocks", force: :cascade do |t|
