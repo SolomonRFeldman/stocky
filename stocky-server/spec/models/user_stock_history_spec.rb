@@ -45,6 +45,21 @@ RSpec.describe UserStockHistory, :type => :model do
       expect(user_stock_history["price"]).to eq(250)
     end
   end
-      
+
+  context "when .with_symbol is called on an instance of user_stock_history" do
+    before do
+      @user_stock_history = UserStockHistory.create(
+        user_id: valid_user.id, stock_id: valid_stock.id, shares: 3, price: 300
+      )
+      @user_stock_history_sym = @user_stock_history.with_symbol
+    end
+
+    it "returns the user_stock with an id, symbol, shares, and price" do
+      expect(@user_stock_history_sym["id"]).to eq(@user_stock_history.id)
+      expect(@user_stock_history_sym["shares"]).to eq(3)
+      expect(@user_stock_history_sym["symbol"]).to eq("AAPL")
+      expect(@user_stock_history_sym["price"]).to eq(300)
+    end
+  end
 
 end
