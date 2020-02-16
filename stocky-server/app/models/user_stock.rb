@@ -26,6 +26,20 @@ class UserStock < ApplicationRecord
     self.user.save
   end
 
+  def with_prices
+    user_stock = self.attributes.slice("id", "shares").merge({"symbol" => self.stock.symbol})
+    api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
+    response = HTTParty.get("https://cloud.iexapis.com/stable/stock/#{user_stock["symbol"]}/batch?types=quote&token=#{api_key}")
+    puts response
+    if response.code == 200 && stock = JSON.parse(response.body)
+      quote = stock["quote"]
+      puts quote["latestPrice"]
+      user_stock.merge({ "latestPrice" => quote["latestPrice"], "open" => quote["open"] })
+    else
+      nil
+    end
+  end
+
   class << self
   
     def find_or_new_by_symbol(user_id: nil, stock_symbol: nil)
