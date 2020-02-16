@@ -29,6 +29,10 @@ RSpec.describe UserStock, :type => :model do
       expect(@user_stock.shares).to eq(0)
     end
 
+    it 'does not create a UserStockHistory' do
+      expect(UserStockHistory.all.last).to be_nil
+    end
+
     it 'has a user' do
       expect(@user_stock.user).to eq(valid_user)
     end
@@ -95,6 +99,12 @@ RSpec.describe UserStock, :type => :model do
       it 'reduces the users balance based on price and quantity' do
         expect(User.find(valid_user.id).balance).to eq(4800)
       end
+
+      it 'creates a user stock history' do
+        expect(UserStockHistory.all.last).to be_instance_of(UserStockHistory)
+        expect(UserStockHistory.all.last.shares).to eq(2)
+        expect(UserStockHistory.all.last.price).to eq(200)
+      end
     end
 
     context "if the user_stock shares are reduced" do
@@ -113,6 +123,12 @@ RSpec.describe UserStock, :type => :model do
 
       it 'adds to the users balance based on price and quantity' do
         expect(User.find(valid_user.id).balance).to eq(5200)
+      end
+
+      it 'creates a user stock history' do
+        expect(UserStockHistory.all.last).to be_instance_of(UserStockHistory)
+        expect(UserStockHistory.all.last.shares).to eq(-2)
+        expect(UserStockHistory.all.last.price).to eq(-200)
       end
     end
 
@@ -184,6 +200,12 @@ RSpec.describe UserStock, :type => :model do
 
       it 'reduces the users balance based on price and quantity' do
         expect(User.find(valid_user.id).balance).to eq(4800)
+      end
+
+      it 'creates a user stock history' do
+        expect(UserStockHistory.all.last).to be_instance_of(UserStockHistory)
+        expect(UserStockHistory.all.last.shares).to eq(2)
+        expect(UserStockHistory.all.last.price).to eq(200)
       end
     end
 
