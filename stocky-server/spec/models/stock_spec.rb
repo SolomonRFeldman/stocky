@@ -34,4 +34,16 @@ RSpec.describe Stock, :type => :model do
     end
   end
 
+  context 'when a stock is joined to user stock histories' do
+    before do
+      @user_stock_history_1 = UserStockHistory.create(user_id: valid_user.id, stock_id: valid_stock.id, price: 200, shares: 2)
+      @user_stock_history_2 = UserStockHistory.create(user_id: jelly_user.id, stock_id: valid_stock.id, price: 300, shares: 3)
+    end
+
+    it 'has many user_stock_histories' do
+      expect(valid_stock.user_stock_histories).to be_include(@user_stock_history_1)
+      expect(valid_stock.user_stock_histories).to be_include(@user_stock_history_2)
+    end
+  end
+
 end
