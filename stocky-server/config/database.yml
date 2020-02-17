@@ -80,6 +80,7 @@ test:
 #
 production:
   <<: *default
+  host: db
   database: stocky_server_production
-  username: stocky_server
-  password: <%= ENV['STOCKY_SERVER_DATABASE_PASSWORD'] %>
+  username: postgres
+  password: <%= ENV['DB_PASSWORD'] %>
