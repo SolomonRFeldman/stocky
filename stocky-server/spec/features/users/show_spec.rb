@@ -6,6 +6,7 @@ end
 
 describe 'Users Features', :type => :feature do
   let(:valid_user) { create(:valid_user) }
+  let(:valid_stock) { create(:valid_stock) }
 
   before(:each) do
     stub_request(:get, /AAPL/)
@@ -26,6 +27,15 @@ describe 'Users Features', :type => :feature do
         }
       )
       .to_return(status: 200, body: '{"quote":{"symbol":"FB","latestPrice":125,"open":122}}', headers: {})
+    stub_request(:get, /MSFT/)
+      .with(
+        headers: {
+          'Accept'=>'*/*',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent'=>'Ruby'
+        }
+      )
+      .to_return(status: 200, body: '{"quote":{"symbol":"MSFT","latestPrice":111,"open":109}}', headers: {})
     combined_response = {
       "AAPL" => {
         "quote" => {
@@ -78,6 +88,9 @@ describe 'Users Features', :type => :feature do
       @user_stock_2.shares = 3
       @user_stock_2.save
       user = User.find_by(id: valid_user.id)
+      @bad_stock = UserStock.find_or_new_by_symbol(user_id: valid_user.id, stock_symbol: "MSFT")
+      @bad_stock.shares = 0
+      @bad_stock.save
       user.balance = 5000
       user.save
       page.driver.header 'Token', create_token(valid_user)
@@ -110,6 +123,16 @@ describe 'Users Features', :type => :feature do
         "symbol" => "FB",
         "latestPrice" => 125,
         "open" => 122
+      })
+    end
+
+    it 'does not include user_stocks with no shares' do
+      expect(JSON.parse(page.body)["user_stocks"]).to_not be_include({
+        "id" => @bad_stock.id,
+        "shares" => 0,
+        "symbol" => "MSFT",
+        "latestPrice" => 111,
+        "open" => 109
       })
     end
 
