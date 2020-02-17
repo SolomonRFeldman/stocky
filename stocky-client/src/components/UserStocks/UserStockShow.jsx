@@ -5,7 +5,7 @@ export default function UserStockShow({ userStock }) {
   return(
     <ListGroupItem>
       {userStock.symbol} - {userStock.shares} Shares
-      <span className='float-right'>${userStock.latestPrice * userStock.shares}</span>
+      <span className='float-right'>${(userStock.latestPrice * userStock.shares).toFixed(2)}</span>
     </ListGroupItem>
   )
 }
