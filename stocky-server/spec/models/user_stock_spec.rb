@@ -382,4 +382,14 @@ RSpec.describe UserStock, :type => :model do
     end
   end
 
+  context 'when it is created with negative shares' do
+    before do
+      @user_stock = UserStock.create(user_id: valid_user.id, stock_id: valid_stock.id, shares: -1)
+    end
+
+    it 'is not valid' do
+      expect(@user_stock).to_not be_valid
+    end
+  end
+
 end
