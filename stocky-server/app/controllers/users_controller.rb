@@ -8,8 +8,8 @@ class UsersController < ApplicationController
   def show
     if @current_user_id == params[:id].to_i
       user = User.find_by(id: @current_user_id)
-      user_stocks = UserStock.with_prices(UserStock.where("user_id = ? AND shares != 0", params[:id]))
-      user_stock_histories = UserStockHistory.with_symbol(UserStockHistory.where(user_id: params[:id]))
+      user_stocks = UserStock.with_prices(UserStock.where("user_id = ? AND shares != 0", params[:id]).order(updated_at: :desc))
+      user_stock_histories = UserStockHistory.with_symbol(UserStockHistory.where(user_id: params[:id]).order(created_at: :desc))
       return render json: { 
         id: user.id,
         balance: user.balance, 
