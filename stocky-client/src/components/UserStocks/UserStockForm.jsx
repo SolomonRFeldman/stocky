@@ -9,7 +9,7 @@ export default function UserStockForm({user, setUser}) {
   const [errors, setErrors] = useState({})
 
   const handleSubmit = direction => {
-    const sentData = formData
+    const sentData = { ...formData }
     sentData.shares = direction * parseInt(formData.shares)
     postRequest(`/users/${user.id}/user_stocks`, {user_stock: sentData}).then(response => {
       const userStock = { 
