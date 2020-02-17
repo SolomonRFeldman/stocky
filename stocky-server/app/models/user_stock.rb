@@ -7,6 +7,8 @@ class UserStock < ApplicationRecord
   validates :user_id, presence: true
   validates :stock_id, presence: true
 
+  validates :shares, :numericality => { :greater_than_or_equal_to => 0 }
+
   API_HOSTNAME = Rails.env == "production" ? "cloud" : "sandbox"
   API_URL = "https://#{API_HOSTNAME}.iexapis.com/stable/stock/"
 
