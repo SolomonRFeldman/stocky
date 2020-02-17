@@ -1,5 +1,4 @@
 import React from 'react'
-import './UserStocksShow.css'
 import { ListGroup } from 'react-bootstrap'
 import UserStockHistory from './UserStockHistory'
 
