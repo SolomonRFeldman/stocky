@@ -4,6 +4,7 @@ import NavBar from './components/NavBar/NavBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { postRequest } from './apiRequests';
 import UserStocks from './components/UserStocks/UserStocks';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 export default function App() {
   const dispatch = useDispatch()
@@ -22,10 +23,12 @@ export default function App() {
 
   return (
     <div className="App">
-      <header>
-        <NavBar />
-      </header>
-      {userStocks()}
+      <Router>
+        <header>
+          <NavBar />
+        </header>
+        {userStocks()}
+      </Router>
     </div>
   );
 }

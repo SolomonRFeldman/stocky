@@ -22,10 +22,8 @@ console.log(user)
   return(
     <CardGroup className='mx-auto mt-4 user-stocks'>
       <Card className='show-card'>
-        <Router>
-          <Route exact path='/' component={userStocksShow} />
-          <Route exact path='/transactions' component={userStockHistories} />
-        </Router>
+        <Route exact path='/' component={userStocksShow} />
+        <Route exact path='/transactions' component={userStockHistories} />
       </Card>
       <Card>
         <Card.Body>
