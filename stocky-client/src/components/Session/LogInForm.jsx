@@ -20,7 +20,6 @@ export default function LogInForm(props) {
       
       props.handleClose()
     }).catch(response => {
-      console.log(response)
       response.status === 400 ?
         response.json().then(errors => setErrors(errors)) :
         setErrors({...errors, server: 'failed to reach server'})

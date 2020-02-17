@@ -30,7 +30,6 @@ export default function UserStockForm({user, setUser}) {
       })
       setErrors({})
     }).catch(response => {
-      console.log(response)
       response.status === 400 ?
         response.json().then(user_stock => setErrors(user_stock.errors)) :
         setErrors({...errors, server: 'failed to reach server'})
@@ -42,7 +41,6 @@ export default function UserStockForm({user, setUser}) {
       <div class='invalid-feedback d-block'>not enough balance</div> :
       null
   }
-console.log(errors)
   return(
     <Form className='text-center user-stock-form'>
       <h1 className="display-4 balance">Cash - ${parseFloat(user.balance).toFixed(2)}</h1>

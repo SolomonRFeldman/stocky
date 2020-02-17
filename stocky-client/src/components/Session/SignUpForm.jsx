@@ -19,7 +19,6 @@ export default function SignUpForm(props) {
       localStorage.token = user.token
       props.handleClose()
     }).catch(response => {
-      console.log(response)
       response.status === 400 ?
         response.json().then(user => setErrors(user.errors)) :
         setErrors({...errors, server: 'failed to reach server'})

@@ -18,7 +18,7 @@ export default function UserStocks(props) {
 
   const userStocksShow = () => <UserStocksShow userStocks={user.user_stocks} />
   const userStockHistories = () => <UserStockHistories userStockHistories={user.user_stock_histories} />
-console.log(user)
+
   return(
     <CardGroup className='mx-auto mt-4 user-stocks'>
       <Card className='show-card'>
