@@ -76,6 +76,26 @@ RSpec.describe UserStock, :type => :model do
     end
   end
 
+  context 'when it is created with a user and without a stock' do
+    before do
+      @user_stock = UserStock.create(user_id: valid_user.id)
+    end
+
+    it 'is not valid' do
+      expect(@user_stock).to_not be_valid
+    end
+  end
+
+  context 'when it is created without a user and with a stock' do
+    before do
+      @user_stock = UserStock.create(stock_id: valid_stock.id)
+    end
+
+    it 'is not valid' do
+      expect(@user_stock).to_not be_valid
+    end
+  end
+
   context "when a user doesn't have a stock and UserStock.find_or_new_by_symbol is called" do
     before do
       valid_stock
