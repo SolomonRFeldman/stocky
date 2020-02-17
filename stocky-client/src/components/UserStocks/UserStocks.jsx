@@ -14,7 +14,7 @@ export default function UserStocks(props) {
   
   useEffect(() =>{
     getRequest(`/users/${currentUser.id}`).then(fetchedUser => setUser(fetchedUser))
-  }, [])
+  }, [currentUser.id])
 
   const userStocksShow = () => <UserStocksShow userStocks={user.user_stocks} />
   const userStockHistories = () => <UserStockHistories userStockHistories={user.user_stock_histories} />
