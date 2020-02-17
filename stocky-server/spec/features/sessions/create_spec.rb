@@ -39,6 +39,10 @@ describe 'Sessions Features', :type => :feature do
     it "returns status 400" do
       expect(page.status_code).to eq(400)
     end
+
+    it "returns json unspecified authentication error" do
+      expect(page).to have_content({authentication_error: true}.to_json.tr('{}', ''))
+    end
   end
 
   context "when an invalid email is provided" do
@@ -49,6 +53,10 @@ describe 'Sessions Features', :type => :feature do
     
     it "returns status 400" do
       expect(page.status_code).to eq(400)
+    end
+
+    it "returns json unspecified authentication error" do
+      expect(page).to have_content({authentication_error: true}.to_json.tr('{}', ''))
     end
   end
 
