@@ -48,6 +48,15 @@ RSpec.describe UserStock, :type => :model do
         }
       )
       .to_return(status: 200, body: combined_response, headers: {})
+    stub_request(:get, /notARealSymbol/)
+      .with(
+        headers: {
+          'Accept'=>'*/*',
+          'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+          'User-Agent'=>'Ruby'
+        }
+      )
+      .to_return(status: 404, body: 'Unknown symbol', headers: {})
   end
 
   context 'when it is created with a user and a stock' do
@@ -355,6 +364,21 @@ RSpec.describe UserStock, :type => :model do
       expect(@user_stock_prices["symbol"]).to eq("AAPL")
       expect(@user_stock_prices["latestPrice"]).to eq(100)
       expect(@user_stock_prices["open"]).to eq(98)
+    end
+  end
+
+  context "when a user stock is created with an invalid stock symbol" do
+    before do
+      @bad_stock = create(:valid_stock, symbol: 'notARealSymbol')
+      @user_stock = UserStock.create(user_id: valid_user.id, stock_id: @bad_stock.id, shares: 3)
+    end
+
+    it "is not valid" do
+      expect(@user_stock).to_not be_valid
+    end
+
+    it 'adds a bad symbol error message' do
+      expect(@user_stock.errors.messages[:stock]).to be_include('unknown symbol')
     end
   end
 
