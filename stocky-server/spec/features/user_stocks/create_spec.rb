@@ -22,6 +22,15 @@ describe 'Users Features', :type => :feature do
       }
     )
     .to_return(status: 200, body: '{"quote":{"symbol":"FB","lastestPrice":125}}', headers: {})
+    stub_request(:get, /notARealSymbol/)
+    .with(
+      headers: {
+        'Accept'=>'*/*',
+        'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'User-Agent'=>'Ruby'
+      }
+    )
+    .to_return(status: 404, body: 'Unknown symbol', headers: {})
   end
 
   context 'when a user posts to user_stocks without a token' do
@@ -72,6 +81,21 @@ describe 'Users Features', :type => :feature do
         "shares" => 2,
         "price" => "200.0"
       })
+    end
+  end
+
+  context 'when a user posts to user_stocks with the right token but with an unknown symbol' do
+    before do
+      page.driver.header 'Token', JwtService.encode({ user_id: valid_user.id })
+      page.driver.submit :post, user_user_stocks_path(user_id: valid_user.id), { user_stock: { symbol: "notARealSymbol", shares: 2 } }
+    end
+    
+    it 'returns 400' do
+      expect(page.status_code).to eq(400)
+    end
+
+    it "returns json unknown symbol error" do
+      expect(page).to have_content({stock: ['unknown symbol']}.to_json.tr('{}', ''))
     end
   end
 
