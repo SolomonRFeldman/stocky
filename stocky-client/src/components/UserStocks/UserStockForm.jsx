@@ -21,7 +21,7 @@ export default function UserStockForm({user, setUser}) {
       }
       const userStockIndex = user.user_stocks.findIndex(stockToRemove => stockToRemove.id === userStock.id)
       if(userStockIndex !== -1) { user.user_stocks.splice(userStockIndex, 1) }
-      if(userStock.shares != 0) { user.user_stocks = [userStock, ...user.user_stocks] }
+      if(userStock.shares !== 0) { user.user_stocks = [userStock, ...user.user_stocks] }
       setUser({
         ...user,
         balance: response.new_balance,
