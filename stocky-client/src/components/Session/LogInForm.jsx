@@ -9,6 +9,7 @@ export default function LogInForm(props) {
 
   const [formData, setFormData] = useState({ name: '', email: '', password: '', password_confirmation: ''})
   const handleChange = event => setFormData({ ...formData, [event.target.id]: event.target.value })
+  const [errors, setErrors] = useState({})
 
   const handleSubmit = event => {
     event.preventDefault()
@@ -18,9 +19,14 @@ export default function LogInForm(props) {
       localStorage.token = user.token
       
       props.handleClose()
+    }).catch(response => {
+      console.log(response)
+      response.status === 400 ?
+        response.json().then(errors => setErrors(errors)) :
+        setErrors({...errors, server: 'failed to reach server'})
     })
   }
-
+console.log(errors)
   return(
     <Modal aria-label='Log In Form' show={props.show} onHide={props.handleClose} centered>
       <Modal.Header closeButton>
@@ -30,7 +36,8 @@ export default function LogInForm(props) {
         <Modal.Body>
           <Form.Group controlId='email'>
             <Form.Label>Email</Form.Label>
-            <Form.Control placeholder='Email' type='email' onChange={handleChange} />
+            <Form.Control placeholder='Email' type='email' onChange={handleChange} isInvalid={errors.authentication_error} />
+            <Form.Control.Feedback type="invalid">Invalid Email or Password</Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId='password'>
             <Form.Label>Password</Form.Label>
