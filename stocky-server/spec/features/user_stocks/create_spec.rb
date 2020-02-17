@@ -99,4 +99,22 @@ describe 'Users Features', :type => :feature do
     end
   end
 
+  context 'when a user posts to user_stocks with the right token but with not enough balance' do
+    before do
+      user = valid_user
+      user.balance = 100
+      user.save
+      page.driver.header 'Token', JwtService.encode({ user_id: user.id })
+      page.driver.submit :post, user_user_stocks_path(user_id: user.id), { user_stock: { symbol: "AAPL", shares: 2 } }
+    end
+    
+    it 'returns 400' do
+      expect(page.status_code).to eq(400)
+    end
+
+    it "returns json bad balance error" do
+      expect(page).to have_content({balance: ['must be greater than or equal to 0']}.to_json.tr('{}', ''))
+    end
+  end
+
 end
