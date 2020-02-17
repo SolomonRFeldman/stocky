@@ -13,4 +13,11 @@ export const getRequest = (url) => fetch(url, configObj("GET")).then(response =>
 const configObjWithBody = (method, body) => {
   return { ...configObj(method), body: JSON.stringify(body) }
 }
-export const postRequest = (url, body) => fetch(url, configObjWithBody("POST", body)).then(response => response.json())
+export const postRequest = (url, body) => fetch(url, configObjWithBody("POST", body)).then(response => {
+  if(response.status === 200) {
+    return response.json() 
+  }
+  else {
+    throw response
+  }
+})
