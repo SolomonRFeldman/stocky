@@ -8,7 +8,7 @@ export default function UserStockShow({ userStockHistory }) {
   return(
     <ListGroupItem>
       {transactionType()} ({userStockHistory.symbol})
-      <span className='float-right'>{Math.abs(userStockHistory.shares)} @ ${userStockHistory.price}</span>
+      <span className='float-right'>{Math.abs(userStockHistory.shares)} @ ${Math.abs(userStockHistory.price)}</span>
     </ListGroupItem>
   )
 }
