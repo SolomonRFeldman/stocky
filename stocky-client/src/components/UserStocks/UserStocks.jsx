@@ -6,22 +6,25 @@ import { getRequest } from '../../apiRequests'
 import { useSelector } from 'react-redux'
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import UserStocksShow from './UserStocksShow'
+import UserStockHistories from './UserStockHistories'
 
 export default function UserStocks(props) {
   const currentUser = useSelector(state => state.currentUser)
-  const [user, setUser] = useState({balance: 0, user_stocks: []})
+  const [user, setUser] = useState({balance: 0, user_stocks: [], user_stock_histories: []})
   
   useEffect(() =>{
     getRequest(`/users/${currentUser.id}`).then(fetchedUser => setUser(fetchedUser))
   }, [])
 
   const userStocksShow = () => <UserStocksShow userStocks={user.user_stocks} />
-
+  const userStockHistories = () => <UserStockHistories userStockHistories={user.user_stock_histories} />
+console.log(user)
   return(
     <CardGroup className='mx-auto mt-4 user-stocks'>
       <Card className='show-card'>
         <Router>
           <Route exact path='/' component={userStocksShow} />
+          <Route exact path='/transactions' component={userStockHistories} />
         </Router>
       </Card>
       <Card>

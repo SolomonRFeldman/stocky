@@ -4,4 +4,5 @@
 
 .user-stocks .show-card {
   max-height: 273px;
+  overflow: scroll;
 }
