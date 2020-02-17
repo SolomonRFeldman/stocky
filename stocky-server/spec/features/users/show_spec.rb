@@ -17,7 +17,7 @@ describe 'Users Features', :type => :feature do
           'User-Agent'=>'Ruby'
         }
       )
-      .to_return(status: 200, body: '{"quote":{"symbol":"APPL","latestPrice":100,"open":98}}', headers: {})
+      .to_return(status: 200, body: '{"quote":{"symbol":"APPL","latestPrice":100,"previousClose":98}}', headers: {})
     stub_request(:get, /FB/)
       .with(
         headers: {
@@ -26,7 +26,7 @@ describe 'Users Features', :type => :feature do
           'User-Agent'=>'Ruby'
         }
       )
-      .to_return(status: 200, body: '{"quote":{"symbol":"FB","latestPrice":125,"open":122}}', headers: {})
+      .to_return(status: 200, body: '{"quote":{"symbol":"FB","latestPrice":125,"previousClose":122}}', headers: {})
     stub_request(:get, /MSFT/)
       .with(
         headers: {
@@ -35,20 +35,20 @@ describe 'Users Features', :type => :feature do
           'User-Agent'=>'Ruby'
         }
       )
-      .to_return(status: 200, body: '{"quote":{"symbol":"MSFT","latestPrice":111,"open":109}}', headers: {})
+      .to_return(status: 200, body: '{"quote":{"symbol":"MSFT","latestPrice":111,"previousClose":109}}', headers: {})
     combined_response = {
       "AAPL" => {
         "quote" => {
           "symbol" => "AAPL",
           "latestPrice" => 100,
-          "open" => 98
+          "previousClose" => 98
         }
       },
       "FB" => {
         "quote" => {
           "symbol" => "FB",
           "latestPrice" => 125,
-          "open" => 122
+          "previousClose" => 122
         }
       }
     }.to_json

@@ -43,7 +43,7 @@ class UserStock < ApplicationRecord
     response = HTTParty.get(API_URL + "#{user_stock["symbol"]}/batch?types=quote&token=#{api_key}")
     if response.code == 200 && stock = JSON.parse(response.body)
       quote = stock["quote"]
-      user_stock.merge({ "latestPrice" => quote["latestPrice"], "open" => quote["open"] })
+      user_stock.merge({ "latestPrice" => quote["latestPrice"], "open" => quote["previousClose"] })
     else
       nil
     end
@@ -72,7 +72,7 @@ class UserStock < ApplicationRecord
         if response.code == 200 && stocks = JSON.parse(response.body)
           user_stocks.map{ |user_stock|
             quote = stocks[user_stock.symbol]["quote"]
-            user_stock.attributes.merge({ "latestPrice" => quote["latestPrice"], "open" => quote["open"] }) 
+            user_stock.attributes.merge({ "latestPrice" => quote["latestPrice"], "open" => quote["previousClose"] }) 
           }
         else
           nil
