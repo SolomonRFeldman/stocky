@@ -6,6 +6,7 @@ import { postRequest } from '../../apiRequests'
 export default function UserStockForm({user, setUser}) {
   const [formData, setFormData] = useState({ symbol: '', shares: '' })
   const handleChange = event => setFormData({ ...formData, [event.target.id]: event.target.value })
+  const [errors, setErrors] = useState({})
 
   const handleSubmit = direction => {
     const sentData = formData
@@ -27,13 +28,36 @@ export default function UserStockForm({user, setUser}) {
         user_stocks: user.user_stocks,
         user_stock_histories: [response.user_stock_history, ...user.user_stock_histories]
       })
+      setErrors({})
+    }).catch(response => {
+      console.log(response)
+      response.status === 400 ?
+        response.json().then(user_stock => setErrors(user_stock.errors)) :
+        setErrors({...errors, server: 'failed to reach server'})
     })
   }
 
+  const balanceError = () => {
+    return errors.user && errors.user.balance ?
+      <div class='invalid-feedback d-block'>not enough balance</div> :
+      null
+  }
+console.log(errors)
   return(
     <Form className='text-center user-stock-form'>
       <h1 className="display-4 balance">Cash - ${parseFloat(user.balance).toFixed(2)}</h1>
-      <Form.Control id='symbol' className='w-75 my-4 mx-auto' aria-label='Ticker' placeholder='Ticker' onChange={handleChange} />
+      {balanceError()}
+      <Form.Group>
+        <Form.Control 
+          id='symbol' 
+          className='w-75 my-4 mx-auto' 
+          aria-label='Ticker' 
+          placeholder='Ticker' 
+          onChange={handleChange}
+          isInvalid={errors.stock}
+        />
+        <Form.Control.Feedback type="invalid">{errors.stock}</Form.Control.Feedback>
+      </Form.Group>
       <Form.Control 
         id='shares' 
         className='w-75 my-4 mx-auto' 
