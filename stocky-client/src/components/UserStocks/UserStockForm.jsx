@@ -58,15 +58,19 @@ console.log(errors)
         />
         <Form.Control.Feedback type="invalid">{errors.stock}</Form.Control.Feedback>
       </Form.Group>
-      <Form.Control 
-        id='shares' 
-        className='w-75 my-4 mx-auto' 
-        aria-label='Quantity' 
-        placeholder='Qty'
-        type='number'
-        min='1'
-        onChange={handleChange} 
-      />
+      <Form.Group>
+        <Form.Control 
+          id='shares' 
+          className='w-75 my-4 mx-auto' 
+          aria-label='Quantity' 
+          placeholder='Qty'
+          type='number'
+          min='1'
+          onChange={handleChange} 
+          isInvalid={errors.shares}
+        />
+        <Form.Control.Feedback type="invalid">cannot sell more shares then you have</Form.Control.Feedback>
+      </Form.Group>
       <Button className='mx-2' variant='success' onClick={() => handleSubmit(1)}>Buy</Button>
       <Button className='mx-2' onClick={() => handleSubmit(-1)}>Sell</Button>
     </Form>
