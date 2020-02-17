@@ -17,8 +17,6 @@ services:
     build: ./stocky-client
   server:
     build: ./stocky-server
-    ports:
-      - 8000:8000
     environment: 
       - RAILS_MASTER_KEY
       - DB_PASSWORD
