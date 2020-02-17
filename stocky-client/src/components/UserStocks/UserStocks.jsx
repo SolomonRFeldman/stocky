@@ -19,7 +19,7 @@ export default function UserStocks(props) {
       </Card>
       <Card>
         <Card.Body>
-          <UserStockForm user={user} />
+          <UserStockForm user={user} setUser={setUser} />
         </Card.Body>
       </Card>
     </CardGroup>
