@@ -4,6 +4,9 @@ class UserStock < ApplicationRecord
   belongs_to :user
   belongs_to :stock
 
+  validates :user_id, presence: true
+  validates :stock_id, presence: true
+
   before_validation do
     price = 0
     self.id ? diff = self.shares - UserStock.find(self.id).shares : diff = self.shares
@@ -59,7 +62,7 @@ class UserStock < ApplicationRecord
           .select(:id, :shares, :symbol)
         symbols = user_stocks.map{ |user_stock| user_stock.symbol }.join(',')
         api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
-        uri = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=#{symbols}L&types=quote&token=#{api_key}"
+        uri = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=#{symbols}&types=quote&token=#{api_key}"
         response = HTTParty.get(uri)
         if response.code == 200 && stocks = JSON.parse(response.body)
           user_stocks.map{ |user_stock|
