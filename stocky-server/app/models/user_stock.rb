@@ -12,7 +12,7 @@ class UserStock < ApplicationRecord
     self.id ? diff = self.shares - UserStock.find(self.id).shares : diff = self.shares
     if diff != 0
       api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
-      response = HTTParty.get("https://cloud.iexapis.com/stable/stock/#{stock.symbol}/batch?types=quote&token=#{api_key}")
+      response = HTTParty.get("https://sandbox.iexapis.com/stable/stock/#{stock.symbol}/batch?types=quote&token=#{api_key}")
       if response.code == 200 && price = JSON.parse(response.body)["quote"]["latestPrice"]
         self.user = User.find(self.user.id)
         self.user.balance -= price.to_i * diff
@@ -22,7 +22,9 @@ class UserStock < ApplicationRecord
         self.user.user_stock_histories << user_stock_history
         self.last_history = user_stock_history
         self.errors.messages[:user] = self.user.errors.messages unless self.user.valid?
-      else 
+      elsif response.code === 404
+        self.errors.add(:stock, 'unknown symbol')
+      else
         self.errors.add(:stock, 'api request failed')
       end
     end
@@ -35,7 +37,7 @@ class UserStock < ApplicationRecord
   def with_prices
     user_stock = self.attributes.slice("id", "shares").merge({"symbol" => self.stock.symbol})
     api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
-    response = HTTParty.get("https://cloud.iexapis.com/stable/stock/#{user_stock["symbol"]}/batch?types=quote&token=#{api_key}")
+    response = HTTParty.get("https://sandbox.iexapis.com/stable/stock/#{user_stock["symbol"]}/batch?types=quote&token=#{api_key}")
     if response.code == 200 && stock = JSON.parse(response.body)
       quote = stock["quote"]
       user_stock.merge({ "latestPrice" => quote["latestPrice"], "open" => quote["open"] })
@@ -62,7 +64,7 @@ class UserStock < ApplicationRecord
           .select(:id, :shares, :symbol)
         symbols = user_stocks.map{ |user_stock| user_stock.symbol }.join(',')
         api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
-        uri = "https://cloud.iexapis.com/stable/stock/market/batch?symbols=#{symbols}&types=quote&token=#{api_key}"
+        uri = "https://sandbox.iexapis.com/stable/stock/market/batch?symbols=#{symbols}&types=quote&token=#{api_key}"
         response = HTTParty.get(uri)
         if response.code == 200 && stocks = JSON.parse(response.body)
           user_stocks.map{ |user_stock|
