@@ -34,7 +34,15 @@ export default function UserStockForm({user, setUser}) {
     <Form className='text-center user-stock-form'>
       <h1 className="display-4 balance">Cash - ${parseFloat(user.balance).toFixed(2)}</h1>
       <Form.Control id='symbol' className='w-75 my-4 mx-auto' aria-label='Ticker' placeholder='Ticker' onChange={handleChange} />
-      <Form.Control id='shares' className='w-75 my-4 mx-auto' aria-label='Quantity' placeholder='Qty' onChange={handleChange} />
+      <Form.Control 
+        id='shares' 
+        className='w-75 my-4 mx-auto' 
+        aria-label='Quantity' 
+        placeholder='Qty'
+        type='number'
+        min='1'
+        onChange={handleChange} 
+      />
       <Button className='mx-2' variant='success' onClick={() => handleSubmit(1)}>Buy</Button>
       <Button className='mx-2' onClick={() => handleSubmit(-1)}>Sell</Button>
     </Form>
