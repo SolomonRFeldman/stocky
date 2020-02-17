@@ -4,7 +4,7 @@ import { CardGroup, Card } from 'react-bootstrap'
 import UserStockForm from './UserStockForm'
 import { getRequest } from '../../apiRequests'
 import { useSelector } from 'react-redux'
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import UserStocksShow from './UserStocksShow'
 import UserStockHistories from './UserStockHistories'
 
