@@ -1,3 +1,7 @@
 .user-stocks {
   max-width: 1000px;
 }
+
+.user-stocks .show-card {
+  max-height: 273px;
+}

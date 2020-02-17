@@ -19,7 +19,7 @@ export default function UserStocks(props) {
 
   return(
     <CardGroup className='mx-auto mt-4 user-stocks'>
-      <Card>
+      <Card className='show-card'>
         <Router>
           <Route exact path='/' component={userStocksShow} />
         </Router>
