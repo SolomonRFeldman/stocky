@@ -26,9 +26,14 @@ export default function LogInForm(props) {
         setErrors({...errors, server: 'failed to reach server'})
     })
   }
-console.log(errors)
+
+  const handleHide = () => {
+    setErrors({})
+    props.handleClose()
+  }
+
   return(
-    <Modal aria-label='Log In Form' show={props.show} onHide={props.handleClose} centered>
+    <Modal aria-label='Log In Form' show={props.show} onHide={handleHide} centered>
       <Modal.Header closeButton>
         <Modal.Title>Log In</Modal.Title>
       </Modal.Header>
