@@ -22,7 +22,7 @@ class UserStock < ApplicationRecord
         self.user = User.find(self.user.id)
         self.user.balance -= price.to_f * diff
         user_stock_history = UserStockHistory.new(
-          user_id: self.user.id, stock_id: self.stock.id, price: price.to_i * diff, shares: diff
+          user_id: self.user.id, stock_id: self.stock.id, price: price.to_f * diff, shares: diff
         )
         self.user.user_stock_histories << user_stock_history
         self.last_history = user_stock_history
