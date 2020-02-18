@@ -20,7 +20,7 @@ class UserStock < ApplicationRecord
       response = HTTParty.get(API_URL + "#{stock.symbol}/batch?types=quote&token=#{api_key}")
       if response.code == 200 && price = JSON.parse(response.body)["quote"]["latestPrice"]
         self.user = User.find(self.user.id)
-        self.user.balance -= price.to_i * diff
+        self.user.balance -= price.to_f * diff
         user_stock_history = UserStockHistory.new(
           user_id: self.user.id, stock_id: self.stock.id, price: price.to_i * diff, shares: diff
         )
