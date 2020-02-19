@@ -1,5 +1,7 @@
 Ruby Version: 2.7.0 - Rails Version: 6.0.2 - React Version: 16.12.0
 
+Deployed App: https://stocky.solomonfeldman.dev
+
 # Stocky
 
 Stocky is a Rails/React app for simulating users buying and selling stocks as real prices rise and fall throught the day. The user can view their purchase history and their current stocks along with their current value.
