@@ -43,12 +43,14 @@ export default function UserStockForm({user, setUser}) {
   }
   return(
     <Form className='text-center user-stock-form'>
-      <h1 className="display-4 balance">Cash - ${parseFloat(user.balance).toFixed(2)}</h1>
-      {balanceError()}
+      <div>
+        <h1 className="display-4 balance mb-0">Cash - ${parseFloat(user.balance).toFixed(2)}</h1>
+        {balanceError()}
+      </div>
       <Form.Group>
         <Form.Control 
           id='symbol' 
-          className='w-75 my-4 mx-auto' 
+          className='w-75 mx-auto' 
           aria-label='Ticker' 
           placeholder='Ticker' 
           onChange={handleChange}
@@ -59,7 +61,7 @@ export default function UserStockForm({user, setUser}) {
       <Form.Group>
         <Form.Control 
           id='shares' 
-          className='w-75 my-4 mx-auto' 
+          className='w-75 mx-auto' 
           aria-label='Quantity' 
           placeholder='Qty'
           type='number'
@@ -69,8 +71,10 @@ export default function UserStockForm({user, setUser}) {
         />
         <Form.Control.Feedback type="invalid">cannot sell more shares then you have</Form.Control.Feedback>
       </Form.Group>
-      <Button className='mx-2' variant='success' onClick={() => handleSubmit(1)}>Buy</Button>
-      <Button className='mx-2' onClick={() => handleSubmit(-1)}>Sell</Button>
+      <div>
+        <Button className='mx-2' variant='success' onClick={() => handleSubmit(1)}>Buy</Button>
+        <Button className='mx-2' onClick={() => handleSubmit(-1)}>Sell</Button>
+      </div>
     </Form>
   )
 }

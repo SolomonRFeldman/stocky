@@ -1,3 +1,9 @@
+
+.user-stock-form {
+  display: grid;
+  grid-template-rows: 69px 62px 62px auto;
+}
+
 .user-stock-form .balance {
   font-size: 2.6rem;
 }
