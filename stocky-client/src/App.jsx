@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import 'bootswatch/dist/journal/bootstrap.min.css';
+import 'font-awesome/css/font-awesome.min.css';
 import NavBar from './components/NavBar/NavBar';
 import { useDispatch, useSelector } from 'react-redux';
 import { postRequest } from './apiRequests';
