@@ -66,8 +66,7 @@ class UserStock < ApplicationRecord
           .joins('JOIN stocks ON user_stocks.stock_id = stocks.id')
           .select(:id, :shares, :symbol)
         symbols = user_stocks.map{ |user_stock| user_stock.symbol }.join(',')
-        uri = API_URL + "market/batch?symbols=#{symbols}&types=quote&token=#{API_KEY}"
-        response = HTTParty.get(uri)
+        response = HTTParty.get(API_URL + "market/batch?symbols=#{symbols}&types=quote&token=#{API_KEY}")
         if response.code == 200 && stocks = JSON.parse(response.body)
           user_stocks.map{ |user_stock|
             quote = stocks[user_stock.symbol]["quote"]
