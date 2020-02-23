@@ -37,3 +37,11 @@
   animation-fill-mode: forwards;
   bottom: 25px;
 }
+
+.user-stock-form .fa-check {
+  color: #22B24C;
+}
+
+.user-stock-form .fa-times {
+  color: #EB6864;
+}

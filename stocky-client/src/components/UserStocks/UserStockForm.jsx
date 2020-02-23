@@ -41,6 +41,7 @@ export default function UserStockForm({user, setUser}) {
           response.json().then(user_stock => setErrors(user_stock.errors)) :
           setErrors({...errors, server: 'failed to reach server'})
         setIsLoading(false)
+        toggleStatusGlyph(`fa fa-times fa-2x`)
       })
     }
   }
