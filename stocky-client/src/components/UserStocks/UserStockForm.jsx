@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
 import './UserStockForm.css'
-import { Form, Button } from 'react-bootstrap'
+import { Form, Button, Spinner } from 'react-bootstrap'
 import { postRequest } from '../../apiRequests'
 
 export default function UserStockForm({user, setUser}) {
   const [formData, setFormData] = useState({ symbol: '', shares: '' })
   const handleChange = event => setFormData({ ...formData, [event.target.id]: event.target.value })
   const [errors, setErrors] = useState({})
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = direction => {
+    setIsLoading(true)
     const sentData = { ...formData }
     sentData.shares = direction * parseInt(formData.shares)
     postRequest(`/users/${user.id}/user_stocks`, {user_stock: sentData}).then(response => {
@@ -29,10 +31,12 @@ export default function UserStockForm({user, setUser}) {
         user_stock_histories: [response.user_stock_history, ...user.user_stock_histories]
       })
       setErrors({})
+      setIsLoading(false)
     }).catch(response => {
       response.status === 400 ?
         response.json().then(user_stock => setErrors(user_stock.errors)) :
         setErrors({...errors, server: 'failed to reach server'})
+      setIsLoading(false)
     })
   }
 
@@ -41,6 +45,7 @@ export default function UserStockForm({user, setUser}) {
       <div class='invalid-feedback d-block'>not enough balance</div> :
       null
   }
+  const showSpinner = () => isLoading ? null : "d-none"
   return(
     <Form className='text-center user-stock-form'>
       <div>
@@ -74,6 +79,7 @@ export default function UserStockForm({user, setUser}) {
       <div>
         <Button className='mx-2' variant='success' onClick={() => handleSubmit(1)}>Buy</Button>
         <Button className='mx-2' onClick={() => handleSubmit(-1)}>Sell</Button>
+        <Spinner className={`${showSpinner()} loading-spinner`} animation="border" variant="primary" />
       </div>
     </Form>
   )
