@@ -11,35 +11,37 @@ export default function UserStockForm({user, setUser}) {
   const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = direction => {
-    setIsLoading(true)
-    const sentData = { ...formData }
-    sentData.shares = direction * parseInt(formData.shares)
-    postRequest(`/users/${user.id}/user_stocks`, {user_stock: sentData}).then(response => {
-      const userStock = { 
-        id: response.id, 
-        shares: response.shares, 
-        symbol: response.symbol, 
-        latestPrice: response.latestPrice, 
-        open: response.open 
-      }
-      const userStockIndex = user.user_stocks.findIndex(stockToRemove => stockToRemove.id === userStock.id)
-      if(userStockIndex !== -1) { user.user_stocks.splice(userStockIndex, 1) }
-      if(userStock.shares !== 0) { user.user_stocks = [userStock, ...user.user_stocks] }
-      setUser({
-        ...user,
-        balance: response.new_balance,
-        user_stocks: user.user_stocks,
-        user_stock_histories: [response.user_stock_history, ...user.user_stock_histories]
+    if(!isLoading && !showSuccess) {
+      setIsLoading(true)
+      const sentData = { ...formData }
+      sentData.shares = direction * parseInt(formData.shares)
+      postRequest(`/users/${user.id}/user_stocks`, {user_stock: sentData}).then(response => {
+        const userStock = { 
+          id: response.id, 
+          shares: response.shares, 
+          symbol: response.symbol, 
+          latestPrice: response.latestPrice, 
+          open: response.open 
+        }
+        const userStockIndex = user.user_stocks.findIndex(stockToRemove => stockToRemove.id === userStock.id)
+        if(userStockIndex !== -1) { user.user_stocks.splice(userStockIndex, 1) }
+        if(userStock.shares !== 0) { user.user_stocks = [userStock, ...user.user_stocks] }
+        setUser({
+          ...user,
+          balance: response.new_balance,
+          user_stocks: user.user_stocks,
+          user_stock_histories: [response.user_stock_history, ...user.user_stock_histories]
+        })
+        setErrors({})
+        setIsLoading(false)
+        toggleSuccess()
+      }).catch(response => {
+        response.status === 400 ?
+          response.json().then(user_stock => setErrors(user_stock.errors)) :
+          setErrors({...errors, server: 'failed to reach server'})
+        setIsLoading(false)
       })
-      setErrors({})
-      setIsLoading(false)
-      toggleSuccess()
-    }).catch(response => {
-      response.status === 400 ?
-        response.json().then(user_stock => setErrors(user_stock.errors)) :
-        setErrors({...errors, server: 'failed to reach server'})
-      setIsLoading(false)
-    })
+    }
   }
 
   const balanceError = () => {
