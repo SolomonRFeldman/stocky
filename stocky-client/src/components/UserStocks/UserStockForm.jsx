@@ -8,6 +8,7 @@ export default function UserStockForm({user, setUser}) {
   const handleChange = event => setFormData({ ...formData, [event.target.id]: event.target.value })
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleSubmit = direction => {
     setIsLoading(true)
@@ -32,6 +33,7 @@ export default function UserStockForm({user, setUser}) {
       })
       setErrors({})
       setIsLoading(false)
+      toggleSuccess()
     }).catch(response => {
       response.status === 400 ?
         response.json().then(user_stock => setErrors(user_stock.errors)) :
@@ -45,7 +47,14 @@ export default function UserStockForm({user, setUser}) {
       <div class='invalid-feedback d-block'>not enough balance</div> :
       null
   }
-  const showSpinner = () => isLoading ? null : "d-none"
+
+  const isHidden = (bool) => bool ? "d-none" : null
+
+  const toggleSuccess = () => {
+    setShowSuccess(true)
+    setTimeout(() => setShowSuccess(false), 1000)
+  }
+
   return(
     <Form className='text-center user-stock-form'>
       <div>
@@ -79,7 +88,8 @@ export default function UserStockForm({user, setUser}) {
       <div>
         <Button className='mx-2' variant='success' onClick={() => handleSubmit(1)}>Buy</Button>
         <Button className='mx-2' onClick={() => handleSubmit(-1)}>Sell</Button>
-        <Spinner className={`${showSpinner()} loading-spinner`} animation="border" variant="primary" />
+        <Spinner className={`${isHidden(!isLoading)} loading-spinner`} animation="border" variant="primary" />
+        <i className={`request-status fa fa-check fa-2x ${isHidden(!showSuccess)}`}></i>
       </div>
     </Form>
   )
