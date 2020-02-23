@@ -13,7 +13,6 @@ class UserStock < ApplicationRecord
   API_URL = "https://#{API_HOSTNAME}.iexapis.com/stable/stock/"
 
   before_validation do
-    price = 0
     self.id ? diff = self.shares - UserStock.find(self.id).shares : diff = self.shares
     if diff != 0
       api_key = Rails.application.credentials[Rails.env.to_sym][:iex_key]
