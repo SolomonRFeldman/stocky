@@ -48,7 +48,7 @@ export default function UserStockForm({user, setUser}) {
 
   const balanceError = () => {
     return errors.user && errors.user.balance ?
-      <div class='invalid-feedback d-block'>not enough balance</div> :
+      <div className='invalid-feedback d-block'>not enough balance</div> :
       null
   }
 
