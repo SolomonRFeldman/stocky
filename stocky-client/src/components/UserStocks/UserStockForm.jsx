@@ -2,16 +2,17 @@ import React, { useState } from 'react'
 import './UserStockForm.css'
 import { Form, Button, Spinner } from 'react-bootstrap'
 import { postRequest } from '../../apiRequests'
+import { v4 as uuid } from 'uuid'
 
 export default function UserStockForm({user, setUser}) {
   const [formData, setFormData] = useState({ symbol: '', shares: '' })
   const handleChange = event => setFormData({ ...formData, [event.target.id]: event.target.value })
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [checks, setChecks] = useState([])
 
   const handleSubmit = direction => {
-    if(!isLoading && !showSuccess) {
+    if(!isLoading) {
       setIsLoading(true)
       const sentData = { ...formData }
       sentData.shares = direction * parseInt(formData.shares)
@@ -53,8 +54,15 @@ export default function UserStockForm({user, setUser}) {
   const isHidden = (bool) => bool ? "d-none" : null
 
   const toggleSuccess = () => {
-    setShowSuccess(true)
-    setTimeout(() => setShowSuccess(false), 1000)
+    const key = uuid()
+    setChecks(oldChecks => [...oldChecks, <i key={key} className={`request-status fa fa-check fa-2x`} />])
+
+    setTimeout(() => {
+      setChecks(oldChecks => {
+        oldChecks.splice(oldChecks.findIndex(check => check.key === key), 1)
+        return [...oldChecks]
+      })
+    }, 1000)
   }
 
   return(
@@ -91,7 +99,7 @@ export default function UserStockForm({user, setUser}) {
         <Button className='mx-2' variant='success' onClick={() => handleSubmit(1)}>Buy</Button>
         <Button className='mx-2' onClick={() => handleSubmit(-1)}>Sell</Button>
         <Spinner className={`${isHidden(!isLoading)} loading-spinner`} animation="border" variant="primary" />
-        <i className={`request-status fa fa-check fa-2x ${isHidden(!showSuccess)}`}></i>
+        {checks}
       </div>
     </Form>
   )
