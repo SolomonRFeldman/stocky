@@ -9,7 +9,7 @@ export default function UserStockForm({user, setUser}) {
   const handleChange = event => setFormData({ ...formData, [event.target.id]: event.target.value })
   const [errors, setErrors] = useState({})
   const [isLoading, setIsLoading] = useState(false)
-  const [checks, setChecks] = useState([])
+  const [statusGlyphs, setStatusGlyphs] = useState([])
 
   const handleSubmit = direction => {
     if(!isLoading) {
@@ -35,7 +35,7 @@ export default function UserStockForm({user, setUser}) {
         })
         setErrors({})
         setIsLoading(false)
-        toggleSuccess()
+        toggleStatusGlyph(`fa fa-check fa-2x`)
       }).catch(response => {
         response.status === 400 ?
           response.json().then(user_stock => setErrors(user_stock.errors)) :
@@ -53,14 +53,14 @@ export default function UserStockForm({user, setUser}) {
 
   const isHidden = (bool) => bool ? "d-none" : null
 
-  const toggleSuccess = () => {
+  const toggleStatusGlyph = (glyphClass) => {
     const key = uuid()
-    setChecks(oldChecks => [...oldChecks, <i key={key} className={`request-status fa fa-check fa-2x`} />])
+    setStatusGlyphs(oldGlyphs => [...oldGlyphs, <i key={key} className={'request-status ' + glyphClass} />])
 
     setTimeout(() => {
-      setChecks(oldChecks => {
-        oldChecks.splice(oldChecks.findIndex(check => check.key === key), 1)
-        return [...oldChecks]
+      setStatusGlyphs(oldGlyphs => {
+        oldGlyphs.splice(oldGlyphs.findIndex(glyph => glyph.key === key), 1)
+        return [...oldGlyphs]
       })
     }, 1000)
   }
@@ -99,7 +99,7 @@ export default function UserStockForm({user, setUser}) {
         <Button className='mx-2' variant='success' onClick={() => handleSubmit(1)}>Buy</Button>
         <Button className='mx-2' onClick={() => handleSubmit(-1)}>Sell</Button>
         <Spinner className={`${isHidden(!isLoading)} loading-spinner`} animation="border" variant="primary" />
-        {checks}
+        {statusGlyphs}
       </div>
     </Form>
   )
