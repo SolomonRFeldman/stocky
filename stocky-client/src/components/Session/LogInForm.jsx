@@ -7,7 +7,7 @@ export default function LogInForm(props) {
   const dispatch = useDispatch()
   const addCurrentUser = payload => dispatch({ type: 'ADD_CURRENT_USER', payload})
 
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', password_confirmation: ''})
+  const [formData, setFormData] = useState({ name: '', email: 'Test@123.com', password: '123', password_confirmation: ''})
   const handleChange = event => setFormData({ ...formData, [event.target.id]: event.target.value })
   const [errors, setErrors] = useState({})
 
@@ -40,12 +40,12 @@ export default function LogInForm(props) {
         <Modal.Body>
           <Form.Group controlId='email'>
             <Form.Label>Email</Form.Label>
-            <Form.Control placeholder='Email' type='email' onChange={handleChange} isInvalid={errors.authentication_error} />
+            <Form.Control placeholder='Email' type='email' onChange={handleChange} isInvalid={errors.authentication_error} value={formData.email} />
             <Form.Control.Feedback type="invalid">Invalid Email or Password</Form.Control.Feedback>
           </Form.Group>
           <Form.Group controlId='password'>
             <Form.Label>Password</Form.Label>
-            <Form.Control placeholder='Password' type='password' onChange={handleChange} />
+            <Form.Control placeholder='Password' type='password' onChange={handleChange} value={formData.password} />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
